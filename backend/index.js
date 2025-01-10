@@ -35,6 +35,59 @@ app.post("/create",(req,res)=>{
 
 });
 
+
+app.post("/agregar",(req,res)=>{
+    const descripcion = req.body.descripcion;
+    const peso = req.body.peso;
+    const metrosCubicos = req.body.metrosCubicos;
+    const tipobulto = req.body.tipobulto;
+    const cantidadbultos = req.body.cantidadbultos;
+
+    db.query('INSERT INTO mercancia(descripcion, peso, metros_cub, tipo_bulto, cantidad_bultos) VALUES (?,?,?,?,?)',[descripcion,peso,metrosCubicos,tipobulto,cantidadbultos],
+        (err,result)=>{
+            if(err){
+                console.log(err);
+            }else{
+                res.send("Cliente registrado");
+            }
+        }
+    );
+
+});
+
+app.get("/mercancia",(req,res)=>{
+    db.query('SELECT * FROM mercancia',
+        (err,result)=>{
+            if(err){
+                console.log(err);
+                res.status(500).send("Error al obtener los datos");
+            }else{
+                res.send(result);
+            }
+        }
+    );
+
+});
+
+app.delete("/delete/:id", (req, res) => {
+    const id = req.params.id; // Obtiene el ID del cliente a eliminar
+
+    db.query('DELETE FROM mercancia WHERE idmercancia = ?', [id], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Error al eliminar el cliente");
+        } else {
+            res.send("Cliente eliminado");
+        }
+    });
+});
+
+
+
+
+
+
+
 app.listen(3001,()=>{
     console.log("Me corro en el puerto 3001")
 })

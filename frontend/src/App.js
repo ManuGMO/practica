@@ -1,10 +1,14 @@
 import './App.css';
-import {useState} from "react"
+import {useEffect,useState} from "react"
 import Axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 
 function App() {
+
+  // -----------------PARAMETROS CLIENTES-------------------
   const [rut, setRut] = useState("");
   const [nombre, setNombre] = useState("");
   const [direccion, setDireccion] = useState("");
@@ -14,6 +18,8 @@ function App() {
   const [region, setRegion] = useState("");
   const [telefono, setTelefono] = useState("");
 
+
+  // ------------------PARAMETROS ENVIO----------------------
   const [lugar, setLugar] = useState("");
   const [fecha, setFecha] = useState("");
   const [origen, setOrigen] = useState("");
@@ -21,7 +27,7 @@ function App() {
   const [recogida, setRecoger] = useState("");
   const [entrega, setEntregar] = useState("");
 
-
+  // ------------------PARAMETROS MERCANCIA-------------------
   const [descripcion, setDescripcion] = useState('');
   const [peso, setPeso] = useState('');
   const [metrosCubicos, setMetrosCubicos] = useState('');
@@ -29,12 +35,16 @@ function App() {
   const [tipobulto, setTipoBulto] = useState("");
   const [cantidadbultos, setCantidadBulto] = useState("");
 
+// ------------MOSTRAR MERCANCIA AGREGADA--------------
+  const [mercancia, setMercancia] = useState([]);
+
+  // -----------AGREGAR CLIENTES A BASE DE DATOS---------------
   const add = () => {
     Axios.post("http://localhost:3001/create",{
       rut:rut,
       nombre:nombre,
       direccion:direccion,
-      actividad:actividad,
+      actividad:actividad, 
       comuna:comuna,
       ciudad:ciudad,
       region:region,
@@ -43,6 +53,49 @@ function App() {
       alert("Cliente registrado");
     })
   }
+  // -----------AGREGAR MERCANCIA A BASE DE DATOS---------------
+  const agregar = () => {
+    Axios.post("http://localhost:3001/agregar",{
+      descripcion:descripcion,
+      peso:peso,
+      metrosCubicos:metrosCubicos, 
+      tipobulto:tipobulto,
+      cantidadbultos:cantidadbultos
+    }).then(()=>{
+      mostrar();
+    })
+  }
+
+
+  // MOSTRAR MERCANCIA DE BASE DE DATOS
+  const mostrar = () => {
+    Axios.get("http://localhost:3001/mercancia")
+      .then((response) => {
+        setMercancia(response.data)
+        console.log(response.data); 
+      })
+      .catch((error) => {
+        console.error("Error al obtener la mercancía:", error);
+      });
+  };
+
+  useEffect(() => {
+    mostrar(); // Llama a la función al cargar el componente
+}, []); // El array vacío asegura que se ejecute solo una vez al montar
+  
+
+
+  const remove = (id) => {
+    Axios.delete(`http://localhost:3001/delete/${id}`)
+        .then(() => {
+            
+            mostrar(); 
+        })
+        .catch((error) => {
+            console.error("Error al eliminar el cliente:", error);
+        });
+  };
+
 
   const handleKeyDown = (event) => {
     const focusableElements = document.querySelectorAll('.datos input');
@@ -61,22 +114,10 @@ function App() {
     }
   };
 
-  const handleAddItem = () => {
-    if (descripcion && peso && metrosCubicos && tipobulto && cantidadbultos) {
-      setItems([...items, { descripcion, peso, metrosCubicos, tipobulto, cantidadbultos }]);
-      // Limpia los campos después de agregar
-      setDescripcion('');
-      setPeso('');
-      setMetrosCubicos('');
-      setTipoBulto('');
-      setCantidadBulto('');
-    }
-  };
-
-
 
   return (
     <div class="container">
+
       <div className="App" >       
 
 
@@ -194,26 +235,28 @@ function App() {
       </div>  
       
     </div>
+        
+          {/* BOTON PARA INGRESAR DATOS DE CLIENTES Y ENVIO   */}
           <button onClick={add} type="button" class="boton-ing btn btn-success btn-sm mt-0 m-3 ">Ingresar</button>
 
-          <div className="mercancia_container">
+
+          <div className="mercancia_container" >
             <h3>Agregar Mercancía</h3>
             <div className="input-group input-group-sm mb-1">
 
-              <input type="text" class="form-control" placeholder="Descripción de la mercancía" value={descripcion} 
+              <input type="text" class="form-control" placeholder="Descripción de la mercancía" 
                 onChange={(e) => setDescripcion(e.target.value)} />
-
-              <input type="number" class="form-control" placeholder="Peso estimado" value={peso} 
+              <input type="number" class="form-control" placeholder="Peso estimado" 
                 onChange={(e) => setPeso(e.target.value)} />
-
-              <input type="number" class="form-control" placeholder="Metros cúbicos" value={metrosCubicos} 
+              <input type="number" class="form-control" placeholder="Metros cúbicos" 
                 onChange={(e) => setMetrosCubicos(e.target.value)} />
-              <input type="text" class="form-control" placeholder="Tipo de bulto" value={tipobulto}
+              <input type="text" class="form-control" placeholder="Tipo de bulto" 
                 onChange={(e) => setTipoBulto(e.target.value)}/>
-              <input type="number" class="form-control" placeholder="Cantidad de Bultos" value={cantidadbultos} 
+              <input type="number" class="form-control" placeholder="Cantidad de Bultos" 
                 onChange={(e) => setCantidadBulto(e.target.value)} />
 
-              <button type="button" class="btn btn-primary btn-sm" onClick={handleAddItem}>Agregar</button>
+              {/* BOTON PARA AGREGAR MERCANCIA */}
+              <button type="button" class="btn btn-primary btn-sm" onClick={agregar}>Agregar</button>
             </div>
 
             {/* Tabla para mostrar los items agregados */}
@@ -228,13 +271,15 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.descripcion}</td>
-                    <td>{item.peso}</td>
-                    <td>{item.metrosCubicos}</td>
-                    <td>{item.tipobulto}</td>
-                    <td>{item.cantidadbultos}</td>
+                {mercancia.map((val,key) => (
+                  <tr key={val.idmercancia}>
+                    <td>{val.descripcion}</td>
+                    <td>{val.peso}</td>
+                    <td>{val.metros_cub}</td>
+                    <td>{val.tipo_bulto}</td>
+                    <td>{val.cantidad_bultos}</td>
+
+                    <td><button type="button" class="btn btn-danger btn-sm" onClick={() => remove(val.idmercancia)}><i className="bi bi-trash"></i></button></td>
                   </tr>
                 ))}
               </tbody>
