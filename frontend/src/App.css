@@ -1,0 +1,25 @@
+
+@import 'labels/detalles_envio.css';
+
+@import 'labels/datos_clientes.css';
+
+.App {
+  text-align: center;
+  align-items: center;
+  position: relative;
+}
+
+
+
+.form-container {
+  display: flex;
+
+}
+
+.datos, .datos_envio {
+  padding: 20px; /* Espaciado interno */
+}
+
+.boton-ing{
+  margin-bottom: 10px;
+}
