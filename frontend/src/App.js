@@ -2,11 +2,17 @@ import './App.css';
 import {useEffect,useState} from "react"
 import Axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 
 function App() {
+
+  const myModal = document.getElementById('myModal')
+  const myInput = document.getElementById('myInput')
+
+  
 
   // -----------------PARAMETROS CLIENTES-------------------
   const [rut, setRut] = useState("");
@@ -279,7 +285,28 @@ function App() {
                     <td>{val.tipo_bulto}</td>
                     <td>{val.cantidad_bultos}</td>
 
-                    <td><button type="button" class="btn btn-danger btn-sm" onClick={() => remove(val.idmercancia)}><i className="bi bi-trash"></i></button></td>
+                    <td>
+                    <button type="button" class="btn btn-primary btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i className="bi bi-trash"></i></button>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmar eliminación</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ¿Seguro que desea eliminar este producto?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary btn-danger" onClick={() => remove(val.idmercancia)} data-bs-dismiss="modal" >Eliminar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    </td>                      
                   </tr>
                 ))}
               </tbody>
@@ -287,9 +314,13 @@ function App() {
         </div>
 
         </div>
+
+
       </div>
 
   );
 }
+
+// <button type="button" class="btn btn-danger btn-sm" onClick={() => remove(val.idmercancia)}><i className="bi bi-trash"></i></button>
 
 export default App;
