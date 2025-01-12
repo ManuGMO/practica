@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+import { add, addEnvio, buscarCliente } from './API/api';
+
 
 
 function App() {
@@ -44,21 +46,36 @@ function App() {
 // ------------MOSTRAR MERCANCIA AGREGADA--------------
   const [mercancia, setMercancia] = useState([]);
 
-  // -----------AGREGAR CLIENTES A BASE DE DATOS---------------
-  const add = () => {
-    Axios.post("http://localhost:3001/create",{
-      rut:rut,
-      nombre:nombre,
-      direccion:direccion,
-      actividad:actividad, 
-      comuna:comuna,
-      ciudad:ciudad,
-      region:region,
-      telefono:telefono
-    }).then(()=>{
-      alert("Cliente registrado");
-    })
-  }
+  // Agregar clientes y envios a base de datos
+  const clienteData = {rut,nombre,direccion,actividad,comuna,ciudad,region,telefono};
+  const envioData = {lugar, fecha, origen, destino, recogida, entrega};
+
+  const ingresar = () => {add(clienteData,envioData); };
+
+  // buscar clientes segun rut
+
+  const buscar = async () => {
+    try {
+        const clienteEncontrado = await buscarCliente(rut);
+        console.log(clienteEncontrado);
+        if (clienteEncontrado) {
+            setNombre(clienteEncontrado.nombre);
+            setDireccion(clienteEncontrado.direccion);
+            setActividad(clienteEncontrado.actividad_economica);
+            setComuna(clienteEncontrado.comuna);
+            setCiudad(clienteEncontrado.ciudad);
+            setRegion(clienteEncontrado.region);
+            setTelefono(clienteEncontrado.telefono);
+        } else {
+            alert("Cliente no encontrado");
+        }
+    } catch (error) {
+        console.error("Error al buscar el cliente:", error);
+        alert("Ocurrió un error al buscar el cliente.");
+    }
+};
+
+
   // -----------AGREGAR MERCANCIA A BASE DE DATOS---------------
   const agregar = () => {
     Axios.post("http://localhost:3001/agregar",{
@@ -85,11 +102,8 @@ function App() {
       });
   };
 
-  useEffect(() => {
-    mostrar(); // Llama a la función al cargar el componente
-}, []); // El array vacío asegura que se ejecute solo una vez al montar
+  useEffect(() => {  mostrar(); } , []);
   
-
 
   const remove = (id) => {
     Axios.delete(`http://localhost:3001/delete/${id}`)
@@ -136,48 +150,50 @@ function App() {
               <span class="input-group-text" id="basic-addon1">RUT: </span>
               <input onChange={(event)=>{setRut(event.target.value);}} class= "form-control" 
               type="text" id="rut" name="rut" placeholder="Ingrese el RUT" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-              <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
+
+
+              <button className="btn btn-outline-secondary" type="button" id="button-addon2" onClick={buscar}>Buscar</button>
             </div>
 
             <div class="input-group input-group-sm mb-1">
               <span class="input-group-text" id="basic-addon1">Nombre: </span>
-              <input onChange={(event)=>{setNombre(event.target.value);}}  class= "form-control" 
+              <input value={nombre} onChange={(event)=>{setNombre(event.target.value);}}  class= "form-control" 
               type="text" id="nombre" name="nombre" placeholder="Ingrese el nombre" aria-label="Recipient's username" aria-describedby="button-addon2"/>
             </div>
             
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon3">Dirección:</span>
-                <input onChange={(event) => { setDireccion(event.target.value); }} class= "form-control" 
+                <input value={direccion} onChange={(event) => { setDireccion(event.target.value); }} class= "form-control" 
                       type="text" id="direccion" name="direccion" placeholder="Ingrese la dirección" aria-label="Dirección"/>
             </div>
 
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon4">Actividad Económica:</span>
-                <input onChange={(event) => { setActividad(event.target.value); }} class= "form-control" 
+                <input value={actividad} onChange={(event) => { setActividad(event.target.value); }} class= "form-control" 
                       type="text" id="actividad" name="actividad" placeholder="Ingrese la actividad económica" aria-label="Actividad Económica"/>
             </div>
 
             <div class="input-group input-group-sm mb-1 ">
                 <span class="input-group-text" id="basic-addon5">Comuna:</span>
-                <input onChange={(event) => { setComuna(event.target.value); }} class= "form-control" 
+                <input value={comuna} onChange={(event) => { setComuna(event.target.value); }} class= "form-control" 
                       type="text" id="comuna" name="comuna" placeholder="Ingrese la comuna" aria-label="Comuna"/>
             </div>
 
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon6">Ciudad:</span>
-                <input onChange={(event) => { setCiudad(event.target.value); }} class= "form-control" 
+                <input value={ciudad} onChange={(event) => { setCiudad(event.target.value); }} class= "form-control" 
                       type="text" id="ciudad" name="ciudad" placeholder="Ingrese la ciudad" aria-label="Ciudad"/>
             </div>
 
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon7">Región:</span>
-                <input onChange={(event) => { setRegion(event.target.value); }} class= "form-control" 
+                <input value={region} onChange={(event) => { setRegion(event.target.value); }} class= "form-control" 
                       type="text" id="region" name="region" placeholder="Ingrese la región" aria-label="Región"/>
             </div>
 
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon8">Teléfono:</span>
-                <input onChange={(event) => { setTelefono(event.target.value); }} class= "form-control" 
+                <input value={telefono} onChange={(event) => { setTelefono(event.target.value); }} class= "form-control" 
                       type="tel" id="telefono" name="telefono" placeholder="Ingrese el teléfono" aria-label="Teléfono"/>
             </div>
 
@@ -243,7 +259,7 @@ function App() {
     </div>
         
           {/* BOTON PARA INGRESAR DATOS DE CLIENTES Y ENVIO   */}
-          <button onClick={add} type="button" class="boton-ing btn btn-success btn-sm mt-0 m-3 ">Ingresar</button>
+          <button onClick={ingresar} type="button" class="boton-ing btn btn-success btn-sm mt-0 m-3 ">Ingresar</button>
 
 
           <div className="mercancia_container" >

@@ -13,17 +13,9 @@ const db = mysql.createConnection({
     database: "flete"
 })
 
-app.post("/create",(req,res)=>{
-    const rut = req.body.rut;
-    const nombre = req.body.nombre;
-    const direccion = req.body.direccion;
-    const actividad = req.body.actividad;
-    const comuna = req.body.comuna;
-    const ciudad = req.body.ciudad;
-    const region = req.body.region;
-    const telefono = req.body.telefono;
-
-    db.query('INSERT INTO clientes(RUT,Nombre,Direccion,ActividadEconomica,Comuna,Ciudad,Region,Telefono) VALUES (?,?,?,?,?,?,?,?)',[rut,nombre,direccion,actividad,comuna,ciudad,region,telefono],
+app.post("/createEnvio",(req,res)=>{
+    const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
+    db.query('INSERT INTO clientes(rut,nombre,direccion,actividad_economica,comuna,ciudad,region,telefono) VALUES (?,?,?,?,?,?,?,?)',[rut,nombre,direccion,actividad,comuna,ciudad,region,telefono],
         (err,result)=>{
             if(err){
                 console.log(err);
@@ -34,6 +26,64 @@ app.post("/create",(req,res)=>{
     );
 
 });
+
+app.post("/createCliente", (req, res) => {
+    const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
+
+    // Insertar cliente en la tabla "clientes"
+    db.query(
+        'INSERT INTO clientes(rut, nombre, direccion, actividad_economica, comuna, ciudad, region, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [rut, nombre, direccion, actividad, comuna, ciudad, region, telefono],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send("Error al registrar el cliente");
+            } else {
+                const id_cliente = result.insertId; // Obtener el id del cliente recién registrado
+
+                // Ahora registrar el envío usando id_cliente
+                const { lugar, fecha, origen, destino, recogida, entrega } = envioData;
+
+                db.query(
+                    'INSERT INTO envios(id_cliente, lugar, fecha, ciudad_origen, ciudad_destino, lugar_recogida, lugar_entrega) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [id_cliente, lugar, fecha, origen, destino, recogida, entrega],
+                    (err2, result2) => {
+                        if (err2) {
+                            console.log(err2);
+                            res.status(500).send("Error al registrar el envío");
+                        } else {
+                            res.send("Cliente y envío registrados correctamente");
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
+
+
+app.get("/getCliente/:rut", (req, res) => {
+    const rut = req.params.rut;
+
+    db.query('SELECT * FROM clientes WHERE rut = ?', [rut], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send("Error al buscar el cliente");
+        } else {
+            if (result.length > 0) {
+                res.json(result[0]); // Enviar el primer resultado como JSON
+            } else {
+                res.status(404).send("Cliente no encontrado");
+            }
+        }
+    });
+});
+
+
+
+
+
+
 
 
 app.post("/agregar",(req,res)=>{
