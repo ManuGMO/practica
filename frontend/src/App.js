@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import { add, addEnvio, buscarCliente } from './API/api';
+import { add, addEnvio, buscarCliente, agregar } from './API/api';
 
 
 
@@ -39,21 +39,34 @@ function App() {
   const [descripcion, setDescripcion] = useState('');
   const [peso, setPeso] = useState('');
   const [metrosCubicos, setMetrosCubicos] = useState('');
-  const [items, setItems] = useState([]);
+  //const [items, setItems] = useState([]);
   const [tipobulto, setTipoBulto] = useState("");
   const [cantidadbultos, setCantidadBulto] = useState("");
-
 // ------------MOSTRAR MERCANCIA AGREGADA--------------
   const [mercancia, setMercancia] = useState([]);
 
-  // Agregar clientes y envios a base de datos
+  // ----------------Agregar clientes y envios a base de datos--------------
   const clienteData = {rut,nombre,direccion,actividad,comuna,ciudad,region,telefono};
   const envioData = {lugar, fecha, origen, destino, recogida, entrega};
+  const ingresar = async () => {
+     const id_envio = await add(clienteData,envioData);
+     console.log("Deberia ser la id del envio: ",id_envio);
 
-  const ingresar = () => {add(clienteData,envioData); };
+     const mercanciasData = mercancia.map(item => ({
+      descripcion: item.descripcion,
+      peso: item.peso,
+      metros_cubicos: item.metrosCubicos,
+      tipo_bulto: item.tipo_bulto,
+      cantidad_bultos: item.cantidad_bultos,
+      id_envio 
+  }));
+    agregar(mercanciasData);
 
-  // buscar clientes segun rut
+  };
 
+  //setMercancia([]);
+
+  // -------------buscar clientes segun rut--------------
   const buscar = async () => {
     try {
         const clienteEncontrado = await buscarCliente(rut);
@@ -76,19 +89,32 @@ function App() {
 };
 
 
-  // -----------AGREGAR MERCANCIA A BASE DE DATOS---------------
-  const agregar = () => {
-    Axios.post("http://localhost:3001/agregar",{
-      descripcion:descripcion,
-      peso:peso,
-      metrosCubicos:metrosCubicos, 
-      tipobulto:tipobulto,
-      cantidadbultos:cantidadbultos
-    }).then(()=>{
-      mostrar();
-    })
-  }
+  // -----------AGREGAR MERCANCIA---------------
+  const agregarMercancia = () => {
+    const nuevaMercancia = {
+        id: mercancia.length + 1, // Generar un ID temporal
+        descripcion,
+        peso,
+        metrosCubicos,
+        tipo_bulto: tipobulto,
+        cantidad_bultos: cantidadbultos
+    };
+    // Agregar la nueva mercancía al estado
+    setMercancia([...mercancia, nuevaMercancia]);
+    // Limpiar los campos de entrada
+    setDescripcion('');
+    setPeso(0);
+    setMetrosCubicos(0);
+    setTipoBulto('');
+    setCantidadBulto(0);
+};
 
+//-----------ELIMINAR MERCANCIAS-------------
+const [borrar,setborrar] = useState(null);
+const remove = (index) => {
+  const nuevasMercancias = mercancia.filter((_, i) => i !== index);
+  setMercancia(nuevasMercancias);
+};
 
   // MOSTRAR MERCANCIA DE BASE DE DATOS
   const mostrar = () => {
@@ -102,19 +128,9 @@ function App() {
       });
   };
 
-  useEffect(() => {  mostrar(); } , []);
   
 
-  const remove = (id) => {
-    Axios.delete(`http://localhost:3001/delete/${id}`)
-        .then(() => {
-            
-            mostrar(); 
-        })
-        .catch((error) => {
-            console.error("Error al eliminar el cliente:", error);
-        });
-  };
+
 
 
   const handleKeyDown = (event) => {
@@ -266,19 +282,19 @@ function App() {
             <h3>Agregar Mercancía</h3>
             <div className="input-group input-group-sm mb-1">
 
-              <input type="text" class="form-control" placeholder="Descripción de la mercancía" 
+              <input value={descripcion} type="text" class="form-control" placeholder="Descripción de la mercancía" 
                 onChange={(e) => setDescripcion(e.target.value)} />
-              <input type="number" class="form-control" placeholder="Peso estimado" 
+              <input value={peso} type="number" class="form-control" placeholder="Peso estimado" 
                 onChange={(e) => setPeso(e.target.value)} />
-              <input type="number" class="form-control" placeholder="Metros cúbicos" 
+              <input value={metrosCubicos} type="number" class="form-control" placeholder="Metros cúbicos" 
                 onChange={(e) => setMetrosCubicos(e.target.value)} />
-              <input type="text" class="form-control" placeholder="Tipo de bulto" 
+              <input value={tipobulto} type="text" class="form-control" placeholder="Tipo de bulto" 
                 onChange={(e) => setTipoBulto(e.target.value)}/>
-              <input type="number" class="form-control" placeholder="Cantidad de Bultos" 
+              <input value={cantidadbultos} type="number" class="form-control" placeholder="Cantidad de Bultos" 
                 onChange={(e) => setCantidadBulto(e.target.value)} />
 
               {/* BOTON PARA AGREGAR MERCANCIA */}
-              <button type="button" class="btn btn-primary btn-sm" onClick={agregar}>Agregar</button>
+              <button type="button" class="btn btn-primary btn-sm" onClick={agregarMercancia}>Agregar</button>
             </div>
 
             {/* Tabla para mostrar los items agregados */}
@@ -294,15 +310,15 @@ function App() {
               </thead>
               <tbody>
                 {mercancia.map((val,key) => (
-                  <tr key={val.idmercancia}>
+                  <tr key={key}>
                     <td>{val.descripcion}</td>
                     <td>{val.peso}</td>
-                    <td>{val.metros_cub}</td>
+                    <td>{val.metrosCubicos}</td>
                     <td>{val.tipo_bulto}</td>
                     <td>{val.cantidad_bultos}</td>
 
                     <td>
-                    <button type="button" class="btn btn-primary btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i className="bi bi-trash"></i></button>
+                    <button type="button" class="btn btn-primary btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setborrar(key)}><i className="bi bi-trash"></i></button>
 
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
@@ -316,7 +332,7 @@ function App() {
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary btn-danger" onClick={() => remove(val.idmercancia)} data-bs-dismiss="modal" >Eliminar</button>
+                            <button type="button" class="btn btn-primary btn-danger" onClick={() => {remove(borrar); setborrar(null);}} data-bs-dismiss="modal" >Eliminar</button>
                           </div>
                         </div>
                       </div>

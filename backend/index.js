@@ -13,19 +13,7 @@ const db = mysql.createConnection({
     database: "flete"
 })
 
-app.post("/createEnvio",(req,res)=>{
-    const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
-    db.query('INSERT INTO clientes(rut,nombre,direccion,actividad_economica,comuna,ciudad,region,telefono) VALUES (?,?,?,?,?,?,?,?)',[rut,nombre,direccion,actividad,comuna,ciudad,region,telefono],
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send("Cliente registrado");
-            }
-        }
-    );
 
-});
 
 app.post("/createCliente", (req, res) => {
     const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
@@ -52,7 +40,8 @@ app.post("/createCliente", (req, res) => {
                             console.log(err2);
                             res.status(500).send("Error al registrar el envío");
                         } else {
-                            res.send("Cliente y envío registrados correctamente");
+                            const id_envios = result2.insertId;
+                            res.json({ message: "Cliente y envío registrados correctamente", id_envios });
                         }
                     }
                 );
@@ -60,6 +49,40 @@ app.post("/createCliente", (req, res) => {
         }
     );
 });
+
+
+app.post("/agregarMercancias", (req, res) => {
+    const mercancias = req.body; // Recibimos un array de objetos de mercancías
+
+    if (!Array.isArray(mercancias) || mercancias.length === 0) {
+        return res.status(400).send("No se enviaron mercancías");
+    }
+
+    // Construir la consulta para insertar múltiples mercancías
+    const values = mercancias.map(({ descripcion, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio }) => [
+        descripcion,
+        peso,
+        metros_cubicos,
+        tipo_bulto,
+        cantidad_bultos,
+        id_envio
+    ]);
+
+    const sql = `
+        INSERT INTO mercancia(descripcion, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio) 
+        VALUES ?
+    `;
+
+    db.query(sql, [values], (err, result) => {
+        if (err) {
+            console.error("Error al registrar las mercancías:", err);
+            res.status(500).send("Error al registrar las mercancías");
+        } else {
+            res.send("Mercancías registradas correctamente");
+        }
+    });
+});
+
 
 
 app.get("/getCliente/:rut", (req, res) => {
@@ -86,24 +109,7 @@ app.get("/getCliente/:rut", (req, res) => {
 
 
 
-app.post("/agregar",(req,res)=>{
-    const descripcion = req.body.descripcion;
-    const peso = req.body.peso;
-    const metrosCubicos = req.body.metrosCubicos;
-    const tipobulto = req.body.tipobulto;
-    const cantidadbultos = req.body.cantidadbultos;
 
-    db.query('INSERT INTO mercancia(descripcion, peso, metros_cub, tipo_bulto, cantidad_bultos) VALUES (?,?,?,?,?)',[descripcion,peso,metrosCubicos,tipobulto,cantidadbultos],
-        (err,result)=>{
-            if(err){
-                console.log(err);
-            }else{
-                res.send("Cliente registrado");
-            }
-        }
-    );
-
-});
 
 app.get("/mercancia",(req,res)=>{
     db.query('SELECT * FROM mercancia',

@@ -3,14 +3,18 @@ import Axios from 'axios';
 
 export const add = (clienteData, envioData) => {
     // Combina ambos objetos en uno solo
-    const data = {
+    const datos = {
         ...clienteData,
         envioData 
     };
-    console.log("Datos enviados al backend:", data);    
-    return Axios.post("http://localhost:3001/createCliente", data)
-        .then(() => {
+    console.log("Datos enviados al backend:", datos);
+
+    return Axios.post("http://localhost:3001/createCliente", datos)
+        .then((response) => {
             alert("Cliente y envío registrados");
+            const id_envio = response.data.id_envios;
+            console.log(id_envio);
+            return id_envio;
         })
         .catch((error) => {
             console.error("Error al registrar el cliente y envío:", error);
@@ -29,3 +33,15 @@ export const buscarCliente = async (rut) => {
         throw error; // Lanza el error para que el frontend pueda manejarlo.
     }
 };
+
+
+export const agregar = (mercanciasData) =>
+    Axios.post("http://localhost:3001/agregarMercancias", mercanciasData)
+        .then(() => {
+            alert("Mercancías registradas");
+            // Limpiar el estado después de enviar
+            
+        })
+        .catch((error) => {
+            console.error("Error al registrar mercancías:", error);
+        });
