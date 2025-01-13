@@ -18,37 +18,52 @@ const db = mysql.createConnection({
 app.post("/createCliente", (req, res) => {
     const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
 
-    // Insertar cliente en la tabla "clientes"
+    db.query('SELECT id_cliente FROM clientes WHERE rut = ?', [rut], (err, result) => {
+        if (err) {
+            console.error("Error al verificar el RUT:", err);
+            return res.status(500).send("Error al verificar el RUT");
+        }
+        if (result.length > 0) {
+            // Cliente ya existe, usar su id_cliente para insertar el envío
+            const id_cliente = result[0].id_cliente;
+            registrarEnvio(id_cliente, envioData, res);
+
+        }else {
+            db.query(
+                'INSERT INTO clientes(rut, nombre, direccion, actividad_economica, comuna, ciudad, region, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [rut, nombre, direccion, actividad, comuna, ciudad, region, telefono],
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send("Error al registrar el cliente");}
+                    else{
+                        const id_cliente = result.insertId; // Obtener el id del cliente recién registrado
+                        registrarEnvio(id_cliente, envioData, res);
+                    }
+                });
+       
+        }
+    });
+});
+
+
+function registrarEnvio(id_cliente, envioData, res) {
+    const { lugar, fecha, origen, destino, recogida, entrega } = envioData;
+
     db.query(
-        'INSERT INTO clientes(rut, nombre, direccion, actividad_economica, comuna, ciudad, region, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [rut, nombre, direccion, actividad, comuna, ciudad, region, telefono],
+        'INSERT INTO envios(id_cliente, lugar, fecha, ciudad_origen, ciudad_destino, lugar_recogida, lugar_entrega) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [id_cliente, lugar, fecha, origen, destino, recogida, entrega],
         (err, result) => {
             if (err) {
-                console.log(err);
-                res.status(500).send("Error al registrar el cliente");
+                console.error("Error al registrar el envío:", err);
+                res.status(500).send("Error al registrar el envío");
             } else {
-                const id_cliente = result.insertId; // Obtener el id del cliente recién registrado
-
-                // Ahora registrar el envío usando id_cliente
-                const { lugar, fecha, origen, destino, recogida, entrega } = envioData;
-
-                db.query(
-                    'INSERT INTO envios(id_cliente, lugar, fecha, ciudad_origen, ciudad_destino, lugar_recogida, lugar_entrega) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    [id_cliente, lugar, fecha, origen, destino, recogida, entrega],
-                    (err2, result2) => {
-                        if (err2) {
-                            console.log(err2);
-                            res.status(500).send("Error al registrar el envío");
-                        } else {
-                            const id_envios = result2.insertId;
-                            res.json({ message: "Cliente y envío registrados correctamente", id_envios });
-                        }
-                    }
-                );
+                const id_envios = result.insertId;
+                res.json({ message: "Cliente y envío registrados correctamente", id_envios });
             }
         }
     );
-});
+}
 
 
 app.post("/agregarMercancias", (req, res) => {
