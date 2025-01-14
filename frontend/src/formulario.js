@@ -5,7 +5,7 @@ import './App.css';
 
 import Axios from "axios";
 
-
+import { ciudades } from './ciudades';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -128,6 +128,7 @@ const remove = (index) => {
 };
 
 
+
   const handleKeyDown = (event) => {
     const focusableElements = document.querySelectorAll('.datos input');
     const totalElements = focusableElements.length;
@@ -148,7 +149,7 @@ const remove = (index) => {
 
   return (
     <div className="container">
-
+      <h3 className="text-center mt-2">Crear orden de flete</h3>
     {!mostrarOrden ? (
       <div className="formula" >       
 
@@ -209,8 +210,39 @@ const remove = (index) => {
           </div>
             
 
+
+
         <div className='col-md-6 datos_envio'>
           <h3>Detalles del envio</h3>
+
+          <div className="input-group mb-2">
+                <label className="input-group-text" htmlFor="origenSelect">Origen:</label>
+                <select className="form-select" id="origenSelect" value={origen} onChange={(e) => setOrigen(e.target.value)}>
+                    <option value="">Seleccione una ciudad...</option>
+                    {ciudades.map((ciudad) => (
+                        <option key={ciudad.codigo} value={ciudad.codigo}>
+                            {ciudad.nombre} ({ciudad.codigo})
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="input-group mb-2">
+                <label className="input-group-text" htmlFor="destinoSelect">Destino:</label>
+                <select 
+                    className="form-select" 
+                    id="destinoSelect" 
+                    value={destino} 
+                    onChange={(e) => setDestino(e.target.value)}
+                >
+                    <option value="">Seleccione una ciudad...</option>
+                    {ciudades.map((ciudad) => (
+                        <option key={ciudad.codigo} value={ciudad.codigo}>
+                            {ciudad.nombre} ({ciudad.codigo})
+                        </option>
+                    ))}
+                </select>
+            </div>
 
             <div className="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="basic-addon9">Lugar:</span>
@@ -226,22 +258,6 @@ const remove = (index) => {
                     onChange={(event) => setFecha(event.target.value)} 
                     type="date" id="fecha" name="fecha" 
                     class="form-control" aria-label="Fecha" aria-describedby="basic-addon10" disabled={bloquearInputs}/>
-            </div>
-
-            <div className="input-group input-group-sm mb-1">
-                <span class="input-group-text" id="basic-addon11">Origen:</span>
-                <input 
-                    onChange={(event) => setOrigen(event.target.value)} 
-                    type="text" id="origen" name="origen" placeholder="Ingrese el origen"
-                    class="form-control" aria-label="Origen" aria-describedby="basic-addon11" disabled={bloquearInputs}/>
-            </div>
-
-            <div className="input-group input-group-sm mb-1">
-                <span class="input-group-text" id="basic-addon12">Destino:</span>
-                <input 
-                    onChange={(event) => setDestino(event.target.value)} 
-                    type="text" id="destino" name="destino" placeholder="Ingrese el destino"
-                    class="form-control" aria-label="Destino" aria-describedby="basic-addon12" disabled={bloquearInputs}/>
             </div>
 
             <div className="input-group input-group-sm mb-1">
@@ -287,8 +303,8 @@ const remove = (index) => {
               <thead>
                 <tr>
                   <th scope="col">Descripción</th>
-                  <th scope="col">Peso Estimado</th>
-                  <th scope="col">Metros Cúbicos</th>
+                  <th scope="col">Peso Estimado(kg)</th>
+                  <th scope="col">Metros Cúbicos(m³)</th>
                   <th scope="col">Tipo de Bulto</th>
                   <th scope="col">Cantidad de Bultos</th>
                 </tr>

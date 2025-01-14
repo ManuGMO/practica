@@ -23,29 +23,24 @@ const VisualizarOrden = () => {
 
   // -------------GENERAR TICKETS---------------------
   const generarTicket = (item) => {
-
     const doc = new jsPDF({
       unit: "mm",
       format: [65, 95]
     });
-
     for (let i = 1; i <= item.cantidad_bultos; i++) {
       if (i > 1) doc.addPage(); // Añade una nueva página si no es la primera
-
-    doc.setFontSize(14);
-    doc.text("Etiqueta", 10, 10);
-  
-    doc.setFontSize(12);
-    doc.text(`Nombre: ${clienteData.nombre}`, 10, 20);
-    doc.text(`Rut: ${clienteData.rut}`, 10, 30);
-    doc.text(`Origen: ${envioData.origen}`, 10, 40);
-    doc.text(`Destino: ${envioData.destino}`, 10, 50);
-    doc.text(`Número de Bultos: ${item.cantidad_bultos}`, 10, 60);
-
-
+      doc.setFontSize(14);
+      doc.text("Etiqueta", 10, 10);
     
-    doc.setFontSize(50); // Tamaño un poco menor para el número
-    doc.text(`${i} / ${item.cantidad_bultos}`, 32.5, 85, { align: "center" });
+      doc.setFontSize(12);
+      doc.text(`Nombre: ${clienteData.nombre}`, 10, 20);
+      doc.text(`Rut: ${clienteData.rut}`, 10, 30);
+      doc.text(`Origen: ${envioData.origen}`, 10, 40);
+      doc.text(`Destino: ${envioData.destino}`, 10, 50);
+      doc.text(`Número de Bultos: ${item.cantidad_bultos}`, 10, 60);
+      
+      doc.setFontSize(50); // Tamaño un poco menor para el número
+      doc.text(`${i} / ${item.cantidad_bultos}`, 32.5, 85, { align: "center" });
     }
     // Guarda el archivo o abre el diálogo de impresión
     const pdfOutput = doc.output("blob"); // Genera un Blob del PDF
@@ -56,7 +51,7 @@ const VisualizarOrden = () => {
 
 
 
-  
+
   return (
     <div className="orden-confirmada container mt-5">
     <h3 className="text-center">Orden Confirmada</h3>
@@ -84,8 +79,8 @@ const VisualizarOrden = () => {
                 <p className="list-group-item"><strong>Fecha:</strong> {envioData.fecha}</p>
                 <p className="list-group-item"><strong>Origen:</strong> {envioData.origen}</p>
                 <p className="list-group-item"><strong>Destino:</strong> {envioData.destino}</p>
-                <p className="list-group-item"><strong>Lugar de Recogida:</strong> {envioData.recoger}</p>
-                <p className="list-group-item"><strong>Lugar de Entrega:</strong> {envioData.entregar}</p>
+                <p className="list-group-item"><strong>Lugar de Recogida:</strong> {envioData.recogida}</p>
+                <p className="list-group-item"><strong>Lugar de Entrega:</strong> {envioData.entrega}</p>
             </div>
         </div>
     </div>
@@ -96,8 +91,8 @@ const VisualizarOrden = () => {
         <thead>
             <tr>
                 <th>Descripción</th>
-                <th>Peso</th>
-                <th>Metros Cúbicos</th>
+                <th>Peso(kg)</th>
+                <th>Metros Cúbicos(m³)</th>
                 <th>Tipo de Bulto</th>
                 <th>Cantidad de Bultos</th>
                 <th>  </th>
@@ -108,7 +103,7 @@ const VisualizarOrden = () => {
                 <tr key={index}>
                     <td>{item.descripcion}</td>
                     <td>{item.peso}</td>
-                    <td>{item.metrosCubicos}</td>
+                    <td>{item.metros_cubicos}</td>
                     <td>{item.tipo_bulto}</td>
                     <td>{item.cantidad_bultos}</td>
                     <td>
