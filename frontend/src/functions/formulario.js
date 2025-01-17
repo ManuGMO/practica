@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 
 import Axios from "axios";
 
@@ -11,7 +11,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import VisualizarOrden from './visualizarOrden';
 
-import { add, addEnvio, buscarCliente, agregar } from './API/api';
+import { add, addEnvio, buscarCliente, agregar } from '../API/api';
 
 
 const Formulario = () => {

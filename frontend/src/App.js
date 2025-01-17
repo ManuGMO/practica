@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import VisualizarOrden from './visualizarOrden'; // Importa el componente
-import Formulario from './formulario'; // Suponiendo que el formulario está en este componente
+import VisualizarOrden from './functions/visualizarOrden'; // Importa el componente
+import Formulario from './functions/formulario'; // Suponiendo que el formulario está en este componente
 
 const App = () => {
   

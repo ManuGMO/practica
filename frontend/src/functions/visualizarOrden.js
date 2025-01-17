@@ -2,6 +2,9 @@
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { jsPDF } from "jspdf";
+import QRCode from "qrcode";
+import { generarBoleta } from './boletas';
+import { generarTicket } from './boletas';
 
 const VisualizarOrden = () => {
   const [clienteData, setClienteData] = useState({});
@@ -22,34 +25,6 @@ const VisualizarOrden = () => {
 
 
   // -------------GENERAR TICKETS---------------------
-  const generarTicket = (item) => {
-    const doc = new jsPDF({
-      unit: "mm",
-      format: [65, 95]
-    });
-    for (let i = 1; i <= item.cantidad_bultos; i++) {
-      if (i > 1) doc.addPage(); // Añade una nueva página si no es la primera
-      doc.setFontSize(14);
-      doc.text("Etiqueta", 10, 10);
-    
-      doc.setFontSize(12);
-      doc.text(`Nombre: ${clienteData.nombre}`, 10, 20);
-      doc.text(`Rut: ${clienteData.rut}`, 10, 30);
-      doc.text(`Origen: ${envioData.origen}`, 10, 40);
-      doc.text(`Destino: ${envioData.destino}`, 10, 50);
-      doc.text(`Número de Bultos: ${item.cantidad_bultos}`, 10, 60);
-      
-      doc.setFontSize(50); // Tamaño un poco menor para el número
-      doc.text(`${i} / ${item.cantidad_bultos}`, 32.5, 85, { align: "center" });
-    }
-    // Guarda el archivo o abre el diálogo de impresión
-    const pdfOutput = doc.output("blob"); // Genera un Blob del PDF
-    const pdfUrl = URL.createObjectURL(pdfOutput);
-    window.open(pdfUrl); // Abre el PDF en una nueva ventana para imprimir
-    
-  };
-
-
 
 
   return (
@@ -83,6 +58,9 @@ const VisualizarOrden = () => {
                 <p className="list-group-item"><strong>Lugar de Entrega:</strong> {envioData.entrega}</p>
             </div>
         </div>
+
+        <button className="btn btn-secondary mt-3" onClick={() =>generarBoleta(envioData, clienteData, mercancia)} > Generar Boleta
+          </button>
     </div>
 
     {/* Tabla de Mercancía */}
@@ -107,7 +85,7 @@ const VisualizarOrden = () => {
                     <td>{item.tipo_bulto}</td>
                     <td>{item.cantidad_bultos}</td>
                     <td>
-          <button className="btn btn-primary" onClick={() => generarTicket(item)}>
+          <button className="btn btn-primary" onClick={() => generarTicket(envioData,clienteData,item)}>
                     Generar ticket
           </button> </td>
                 </tr>

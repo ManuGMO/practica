@@ -14,6 +14,11 @@ const db = mysql.createConnection({
 })
 
 
+app.get("/ordenFlete", (req, res) => {
+    res.send('<h1>  Aca deberia de estar el formulario para crear ordenes :P </h1>')
+   // res.json({ mensaje: "Información de la orden de flete", orden: {} });
+  });
+
 
 app.post("/createCliente", (req, res) => {
     const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
