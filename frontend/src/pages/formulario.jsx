@@ -3,20 +3,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
-import Axios from "axios";
-
-import { ciudades } from './ciudades';
+import { ciudades } from '../functions/ciudades';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import VisualizarOrden from './visualizarOrden';
+import VisualizarOrden from '../functions/visualizarOrden';
 
-import { add, addEnvio, buscarCliente, agregar } from '../API/api';
+import { add, buscarCliente, agregar } from '../services/formularioService';
 
 
 const Formulario = () => {
-    const myModal = document.getElementById('myModal')
-  const myInput = document.getElementById('myInput')
 
   const [bloquearInputs, setBloquearInputs] = useState(false);
   const [mostrarOrden, setMostrarOrden] = useState(false);

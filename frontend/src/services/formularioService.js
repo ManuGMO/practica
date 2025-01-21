@@ -9,7 +9,7 @@ export const add = (clienteData, envioData) => {
     };
     console.log("Datos enviados al backend:", datos);
 
-    return Axios.post("http://localhost:3001/createCliente", datos)
+    return Axios.post("http://localhost:3001/api/createCliente", datos)
         .then((response) => {
             alert("Cliente y envío registrados");
             const id_envio = response.data.id_envios;
@@ -25,7 +25,8 @@ export const add = (clienteData, envioData) => {
 
 export const buscarCliente = async (rut) => {
     try {
-        const response = await Axios.get(`http://localhost:3001/getCliente/${rut}`);
+        console.log("Holaaaaa");
+        const response = await Axios.get(`http://localhost:3001/api/getCliente/${rut}`);
         console.log(response.data); // Aquí deberías ver los datos si todo funciona.
         return response.data; // Devuelve el dato para ser usado en el frontend.
     } catch (error) {
@@ -36,7 +37,7 @@ export const buscarCliente = async (rut) => {
 
 
 export const agregar = (mercanciasData) =>
-    Axios.post("http://localhost:3001/agregarMercancias", mercanciasData)
+    Axios.post("http://localhost:3001/api/agregarMercancias", mercanciasData)
         .then(() => {
             alert("Mercancías registradas");
             // Limpiar el estado después de enviar
