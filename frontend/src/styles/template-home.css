@@ -1,0 +1,106 @@
+
+
+.principal {
+
+    font-size: 22px;
+    line-height: 1.8em;
+    overflow-x: hidden;
+    font-weight: bold;
+    
+}
+
+a:hover, a.active { color: #309AFD; }
+
+
+
+h1 { 
+    font-size: 4rem; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); 
+    font-weight: 500;
+}
+
+div { box-sizing: border-box;}
+.tm-color-primary { color: #309AFD; }
+.tm-bg-gray { background-color: #F1F2F3; }
+blockquote { margin: 0 0 30px 10px; }
+
+
+
+
+a { 
+    text-decoration: none; 
+    transition: all 0.3s ease;
+}
+
+.tm-site-header {
+    padding: 100px 150px 20px;
+}
+
+.tm-nav-item {
+    list-style: none;
+    margin: 28px;   
+    background-color: aliceblue;
+    border-radius: 10px;
+}
+
+.tm-nav-link {
+    display: flex;
+    align-items: center;    
+    flex-direction: column;
+    width: 200px;
+    height: 150px;
+    padding: 10px;
+    border: 2px solid #309AFD;
+    border-radius: 10px;
+    color: #8e8e8e; 
+    box-sizing: border-box;
+}
+
+.tm-nav-link:hover,
+.tm-nav-link.active {
+    color: #309AFD;
+    border: 3px solid #309AFD;
+    transform: scale(1.1);
+    background-color: aliceblue;
+    transition: color 0.3s ease, transform 0.3s ease; 
+}
+
+.tm-nav-link i {
+    
+    color: #555353; 
+    font-size: 5rem;
+}
+
+.tm-nav-link:hover i {
+    color: #FF5733; /* Cambia a otro color al pasar el mouse */
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+    transition: color 0.3s ease, transform 0.3s ease; /* Agrega una transición suave */
+    
+}
+
+.tm-main-nav {
+    background: #b6c5d45b; /* Fondo gris claro */
+    /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+   
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+   
+}
+
+.tm-main-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Asegura alineación vertical */
+    padding: 0;
+    list-style: none;
+}
+
+
+.tm-container {
+    max-width: 1254px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto 135px;
+}
+

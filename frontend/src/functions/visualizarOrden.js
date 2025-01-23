@@ -69,6 +69,9 @@ const VisualizarOrden = () => {
         <thead>
             <tr>
                 <th>Descripción</th>
+                <th>Tipo de pago</th>
+                <th>Numero Doc.</th>
+                <th>Proveedor</th>
                 <th>Peso(kg)</th>
                 <th>Metros Cúbicos(m³)</th>
                 <th>Tipo de Bulto</th>
@@ -80,6 +83,9 @@ const VisualizarOrden = () => {
             {mercancia.map((item, index) => (
                 <tr key={index}>
                     <td>{item.descripcion}</td>
+                    <td>{item.tipo_pago}</td>
+                    <td>{item.num_documento}</td>
+                    <td>{item.proveedor}</td>
                     <td>{item.peso}</td>
                     <td>{item.metros_cubicos}</td>
                     <td>{item.tipo_bulto}</td>

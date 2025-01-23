@@ -84,8 +84,11 @@ router.post("/agregarMercancias", (req, res) => {
     }
 
     // Construir la consulta para insertar múltiples mercancías
-    const values = mercancias.map(({ descripcion, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio }) => [
+    const values = mercancias.map(({ descripcion, tipo_pago, num_documento, proveedor, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio }) => [
         descripcion,
+        tipo_pago,
+        num_documento,
+        proveedor,
         peso,
         metros_cubicos,
         tipo_bulto,
@@ -94,7 +97,7 @@ router.post("/agregarMercancias", (req, res) => {
     ]);
 
     const sql = `
-        INSERT INTO mercancia(descripcion, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio) 
+        INSERT INTO mercancia(descripcion, tipo_pago, num_documento, proveedor, peso, metros_cubicos, tipo_bulto, cantidad_bultos, id_envio) 
         VALUES ?
     `;
 
@@ -107,6 +110,29 @@ router.post("/agregarMercancias", (req, res) => {
         }
     });
 });
+
+
+router.delete("/eliminarEnvio/:id_envio", (req, res) => {
+    const { id_envio } = req.params;
+
+    console.log("ID del envío a eliminar:", id_envio); // LOG PARA DEPURAR
+
+    const sql = "DELETE FROM envios WHERE id_envio = ?";
+
+    db.query(sql, [id_envio], (err, result) => {
+        if (err) {
+            console.error("Error SQL al eliminar el envío:", err); // LOG PARA VER ERROR SQL
+            return res.status(500).json({ error: "Error al eliminar el envío", details: err });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "No se encontró el envío para eliminar." });
+        }
+
+        res.json({ message: "Envío eliminado correctamente" });
+    });
+});
+
 
 
 export default router;

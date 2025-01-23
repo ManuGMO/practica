@@ -9,7 +9,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import VisualizarOrden from '../functions/visualizarOrden';
 
-import { add, buscarCliente, agregar } from '../services/formularioService';
+import { add, buscarCliente, agregar, cancelarEnvio } from '../services/formularioService';
 
 
 const Formulario = () => {
@@ -43,6 +43,10 @@ const Formulario = () => {
   //const [items, setItems] = useState([]);
   const [tipobulto, setTipoBulto] = useState("");
   const [cantidadbultos, setCantidadBulto] = useState("");
+  const [tipoDocumento, setTipoDocumento] = useState("");
+  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [proveedor, setProveedor] = useState("");
+
 // ------------MOSTRAR MERCANCIA AGREGADA--------------
   const [mercancia, setMercancia] = useState([]);
 
@@ -50,27 +54,52 @@ const Formulario = () => {
   const clienteData = {rut,nombre,direccion,actividad,comuna,ciudad,region,telefono};
   const envioData = {lugar, fecha, origen, destino, recogida, entrega};
   let navigate = useNavigate();
-
+  const [idEnvio, setIdEnvio] = useState("");
   const ingresar = async () => {
-     const id_envio = await add(clienteData,envioData);
+    let id_envio;
+    try{
+     id_envio = await add(clienteData,envioData);
+
+     if (!id_envio) {
+      throw new Error("No se pudo obtener el ID del envío.");
+    }
+     setIdEnvio(id_envio);
      console.log("Deberia ser la id del envio: ",id_envio);
 
      const mercanciasData = mercancia.map(item => ({
       descripcion: item.descripcion,
+      tipo_pago: item.tipoDocumento,
+      num_documento: item.numeroDocumento,
+      proveedor: item.proveedor,
       peso: item.peso,
       metros_cubicos: item.metrosCubicos,
       tipo_bulto: item.tipo_bulto,
       cantidad_bultos: item.cantidad_bultos,
       id_envio 
   }));
-    agregar(mercanciasData);
+    await agregar(mercanciasData);
     
+    //Aqui deberia de haber una condicion que al recibir un error de cualquier funcion, 
+    //    se salga de esta funcion 'ingresar' y alerte por el error
+
+
     localStorage.setItem('clienteData', JSON.stringify(clienteData));
     localStorage.setItem('envioData', JSON.stringify(envioData));
     localStorage.setItem('mercancia', JSON.stringify(mercanciasData));
-
     // Redirigir a la ruta /orden
     navigate('/orden');
+
+  } catch(error){
+
+    if (id_envio) {
+      console.log ("ID: ", id_envio);
+      await cancelarEnvio(id_envio);
+  }
+    console.error("Error en el proceso de ingreso:", error);
+    alert("Ocurrió un error y no se completó la operación.");
+
+    
+  }
 
   };
 
@@ -101,6 +130,9 @@ const Formulario = () => {
     const nuevaMercancia = {
         id: mercancia.length + 1, // Generar un ID temporal
         descripcion,
+        tipoDocumento,
+        numeroDocumento,
+        proveedor,
         peso,
         metrosCubicos,
         tipo_bulto: tipobulto,
@@ -110,6 +142,9 @@ const Formulario = () => {
     setMercancia([...mercancia, nuevaMercancia]);
     // Limpiar los campos de entrada
     setDescripcion('');
+    setTipoDocumento('');
+    setNumeroDocumento('')
+    setProveedor('');
     setPeso('');
     setMetrosCubicos('');
     setTipoBulto('');
@@ -281,6 +316,18 @@ const remove = (index) => {
 
               <input value={descripcion} type="text" class="form-control" placeholder="Descripción de la mercancía" 
                 onChange={(e) => setDescripcion(e.target.value)} disabled={bloquearInputs}/>
+
+              <select value={tipoDocumento} className="form-select" id='tipoDoc' onChange={(e) => setTipoDocumento(e.target.value)} disabled={bloquearInputs}>
+                <option value="">Tipo de pago</option>
+                <option value="Boleta">Boleta</option>
+                <option value="Factura">Factura</option>
+                <option value="Guia de despacho">Guía de despacho</option>
+              </select>
+
+              <input value={numeroDocumento} type="text" class="form-control" placeholder="Numero de documento" 
+                onChange={(e) => setNumeroDocumento(e.target.value)} disabled={bloquearInputs}/>
+              <input value={proveedor} type="text" class="form-control" placeholder="Nombre Proveedor" 
+                onChange={(e) => setProveedor(e.target.value)} disabled={bloquearInputs}/>
               <input value={peso} type="number" class="form-control" placeholder="Peso estimado" 
                 onChange={(e) => setPeso(e.target.value)} disabled={bloquearInputs}/>
               <input value={metrosCubicos} type="number" class="form-control" placeholder="Metros cúbicos" 
@@ -299,8 +346,11 @@ const remove = (index) => {
               <thead>
                 <tr>
                   <th scope="col">Descripción</th>
-                  <th scope="col">Peso Estimado(kg)</th>
-                  <th scope="col">Metros Cúbicos(m³)</th>
+                  <th scope="col">Tipo de pago</th>
+                  <th scope="col">Num. documento</th>
+                  <th scope="col">Proveedor</th>
+                  <th scope="col">Peso(kg)</th>
+                  <th scope="col">Metros³</th>
                   <th scope="col">Tipo de Bulto</th>
                   <th scope="col">Cantidad de Bultos</th>
                 </tr>
@@ -309,6 +359,9 @@ const remove = (index) => {
                 {mercancia.map((val,key) => (
                   <tr key={key}>
                     <td>{val.descripcion}</td>
+                    <td>{val.tipoDocumento}</td>
+                    <td>{val.numeroDocumento}</td>
+                    <td>{val.proveedor}</td>
                     <td>{val.peso}</td>
                     <td>{val.metrosCubicos}</td>
                     <td>{val.tipo_bulto}</td>
@@ -356,7 +409,7 @@ const remove = (index) => {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary btn-success" onClick={() => { ingresar(); setBloquearInputs(true); }} data-bs-dismiss="modal">Confirmar</button>
+                    <button type="button" class="btn btn-primary btn-success" onClick={() => { ingresar(); }} data-bs-dismiss="modal">Confirmar</button>
                   </div>
                 </div>
               </div>

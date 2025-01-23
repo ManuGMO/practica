@@ -1,24 +1,20 @@
 
 import Axios from 'axios';
 
-export const add = (clienteData, envioData) => {
+export const add = async (clienteData, envioData) => {
     // Combina ambos objetos en uno solo
-    const datos = {
-        ...clienteData,
-        envioData 
-    };
-    console.log("Datos enviados al backend:", datos);
+    try{
+        const datos = {...clienteData, envioData};
+        console.log("Datos enviados al backend:", datos);
 
-    return Axios.post("http://localhost:3001/api/createCliente", datos)
-        .then((response) => {
-            alert("Cliente y envío registrados");
-            const id_envio = response.data.id_envios;
-            console.log(id_envio);
-            return id_envio;
-        })
-        .catch((error) => {
-            console.error("Error al registrar el cliente y envío:", error);
-        });
+        const response = await Axios.post("http://localhost:3001/api/createCliente", datos);
+        alert("Cliente y envío registrados");
+
+        return response.data.id_envios; 
+    }catch(error){
+        console.error("Error al registrar el cliente y envío:", error);
+        throw error;
+    }
 };
 
 
@@ -36,13 +32,23 @@ export const buscarCliente = async (rut) => {
 };
 
 
-export const agregar = (mercanciasData) =>
-    Axios.post("http://localhost:3001/api/agregarMercancias", mercanciasData)
-        .then(() => {
-            alert("Mercancías registradas");
-            // Limpiar el estado después de enviar
-            
-        })
-        .catch((error) => {
-            console.error("Error al registrar mercancías:", error);
-        });
+export const agregar = async (mercanciasData) =>{
+    try {
+        await Axios.post("http://localhost:3001/api/agregarMercancias", mercanciasData);
+        alert("Mercancías registradas");
+      } catch (error) {
+        console.error("Error al registrar mercancías:", error);
+        throw error; // Lanza el error para que lo capture `ingresar`
+      }
+    };
+
+
+    export const cancelarEnvio = (id_envio) => {
+        return Axios.delete(`http://localhost:3001/api/eliminarEnvio/${id_envio}`)
+            .then(() => {
+                alert("El envío fue eliminado correctamente.");
+            })
+            .catch((error) => {
+                console.error("Error al eliminar el envío:", error);
+            });
+    };

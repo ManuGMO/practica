@@ -1,7 +1,7 @@
 
-@import 'labels/detalles_envio.css';
+@import 'styles/detalles_envio.css';
 
-@import 'labels/datos_clientes.css';
+@import 'styles/datos_clientes.css';
 
 .formula {
   text-align: center;
