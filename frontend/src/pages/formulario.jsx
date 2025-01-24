@@ -7,9 +7,9 @@ import { ciudades } from '../functions/ciudades';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import VisualizarOrden from '../functions/visualizarOrden';
+import VisualizarOrden from './visualizarOrden';
 
-import { add, buscarCliente, agregar, cancelarEnvio } from '../services/formularioService';
+import { add, buscarCliente, agregar, cancelarEnvio, crearNumeroOrden } from '../services/formularioService';
 
 
 const Formulario = () => {
@@ -82,12 +82,9 @@ const Formulario = () => {
     //Aqui deberia de haber una condicion que al recibir un error de cualquier funcion, 
     //    se salga de esta funcion 'ingresar' y alerte por el error
 
-
-    localStorage.setItem('clienteData', JSON.stringify(clienteData));
-    localStorage.setItem('envioData', JSON.stringify(envioData));
-    localStorage.setItem('mercancia', JSON.stringify(mercanciasData));
+    let numero_orden = await crearNumeroOrden(id_envio)
     // Redirigir a la ruta /orden
-    navigate('/orden');
+    navigate(`/formulario/orden/${numero_orden}`);
 
   } catch(error){
 

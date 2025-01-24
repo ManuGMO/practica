@@ -8,7 +8,6 @@ export const add = async (clienteData, envioData) => {
         console.log("Datos enviados al backend:", datos);
 
         const response = await Axios.post("http://localhost:3001/api/createCliente", datos);
-        alert("Cliente y envío registrados");
 
         return response.data.id_envios; 
     }catch(error){
@@ -16,8 +15,6 @@ export const add = async (clienteData, envioData) => {
         throw error;
     }
 };
-
-
 
 export const buscarCliente = async (rut) => {
     try {
@@ -31,7 +28,6 @@ export const buscarCliente = async (rut) => {
     }
 };
 
-
 export const agregar = async (mercanciasData) =>{
     try {
         await Axios.post("http://localhost:3001/api/agregarMercancias", mercanciasData);
@@ -42,13 +38,39 @@ export const agregar = async (mercanciasData) =>{
       }
     };
 
+export const cancelarEnvio = (id_envio) => {
+    return Axios.delete(`http://localhost:3001/api/eliminarEnvio/${id_envio}`)
+        .then(() => {
+            alert("El envío fue eliminado correctamente.");
+        })
+        .catch((error) => {
+            console.error("Error al eliminar el envío:", error);
+        });
+};
 
-    export const cancelarEnvio = (id_envio) => {
-        return Axios.delete(`http://localhost:3001/api/eliminarEnvio/${id_envio}`)
-            .then(() => {
-                alert("El envío fue eliminado correctamente.");
-            })
-            .catch((error) => {
-                console.error("Error al eliminar el envío:", error);
-            });
-    };
+export const crearNumeroOrden = async (id_envio) => {
+    try {
+        const numero_orden = generarNumeroOrden(id_envio);
+
+        const response = await Axios.post('http://localhost:3001/api/crearNumero', {
+            id_envio,
+            numero_orden
+        });
+
+        console.log("Orden creada exitosamente:", response.data);
+        return numero_orden;
+    } catch (error) {
+        console.error("Error al crear la orden:", error);
+        return null;
+    }
+};
+
+
+function generarNumeroOrden(seed) {
+    let x = Math.sin(seed) * 10000;
+    const randomValue = x - Math.floor(x);
+    const randomNumber = Math.floor(randomValue * 1e9); 
+
+ 
+    return String(randomNumber).padEnd(9, '0'); 
+}

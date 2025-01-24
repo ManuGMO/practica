@@ -1,31 +1,37 @@
 
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
-import { generarBoleta } from './boletas';
-import { generarTicket } from './boletas';
+import { generarBoleta } from '../functions/boletas';
+import { generarTicket } from '../functions/boletas';
+import { getOrdenByNumero } from '../services/visualizarService';
 
 const VisualizarOrden = () => {
+   
+  const { numero_orden } = useParams(); 
+
   const [clienteData, setClienteData] = useState({});
   const [envioData, setEnvioData] = useState({});
   const [mercancia, setMercancia] = useState([]);
 
 
   useEffect(() => {
-    // Recuperar datos desde localStorages
-    const cliente = JSON.parse(localStorage.getItem('clienteData'));
-    const envio = JSON.parse(localStorage.getItem('envioData'));
-    const mercanciaList = JSON.parse(localStorage.getItem('mercancia'));
+    const fetchOrden = async () => {
+        const data = await getOrdenByNumero(numero_orden);
+        if (data) {
+            setClienteData(data.clienteData);
+            setEnvioData(data.envioData);
+            setMercancia(data.mercancia);
+        }
+    };
 
-    setClienteData(cliente || {});
-    setEnvioData(envio || {});
-    setMercancia(mercanciaList || []);
-  }, []);
+    fetchOrden();
+}, [numero_orden]);
 
-
-  // -------------GENERAR TICKETS---------------------
-
+// ------------------AJUSTAR FECHA-------------------
+const fechaReal = new Date(envioData.fecha).toLocaleDateString("es-CL", {year: "numeric",month: "2-digit",day: "2-digit",});
 
   return (
     <div className="orden-confirmada container mt-5">
@@ -51,7 +57,7 @@ const VisualizarOrden = () => {
             <h4>Detalles del Envío</h4>
             <div className="list-group">
                 <p className="list-group-item"><strong>Lugar:</strong> {envioData.lugar}</p>
-                <p className="list-group-item"><strong>Fecha:</strong> {envioData.fecha}</p>
+                <p className="list-group-item"><strong>Fecha:</strong> {fechaReal}</p>
                 <p className="list-group-item"><strong>Origen:</strong> {envioData.origen}</p>
                 <p className="list-group-item"><strong>Destino:</strong> {envioData.destino}</p>
                 <p className="list-group-item"><strong>Lugar de Recogida:</strong> {envioData.recogida}</p>

@@ -133,7 +133,22 @@ router.delete("/eliminarEnvio/:id_envio", (req, res) => {
     });
 });
 
+router.post("/crearNumero", (req, res) => {
+    const { id_envio, numero_orden } = req.body;
 
+    db.query(
+        `INSERT INTO ordenes (id_envio, numero_orden) VALUES (?, ?)`,
+        [id_envio, numero_orden],
+        (err, result) => {
+            if (err) {
+                console.error("Error al insertar la orden:", err);
+                res.status(500).json({ error: "Error al insertar la orden" });
+            } else {
+                res.json({ success: true, message: "Orden creada correctamente" });
+            }
+        }
+    );
+});
 
 export default router;
 //module.exports = router;

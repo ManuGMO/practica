@@ -21,6 +21,9 @@ const Lista = () => {
         fetchData();
     }, []);
 
+
+    
+
     return (
         <div className='container'>
             <h2 className="text-center mt-3 mb-5">Lista de embarques</h2>
@@ -46,8 +49,8 @@ const Lista = () => {
                     </thead>
                     <tbody>
                         {embarques.map((item) => (
-                            <tr key={item.nombre}>
-                                <td>{item.fecha_salida}</td>
+                            <tr key={item.id_mercancia}>
+                                <td>{new Date(item.fecha_salida).toLocaleDateString("es-CL", {year: "numeric",month: "2-digit",day: "2-digit",})}</td>
                                 <td>{item.id_envio}</td>
                                 <td>{item.nombre}</td>
                                 <td>{item.tipo_pago}</td>

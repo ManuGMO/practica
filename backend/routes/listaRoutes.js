@@ -6,6 +6,7 @@ import { db } from "../config/db.js";
 router.get("/listaEmbarques", (req, res) => {
     const sql = `
         SELECT 
+            m.id_mercancia,
             em.fecha_salida, 
             e.id_envio, 
             c.nombre, 
