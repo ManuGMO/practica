@@ -29,11 +29,12 @@ const TablaEnvios = ({ datos, onSeleccionar }) => {
                 <thead className="table-success">
                     <tr>
                         <th></th>
-                        <th>ID Envío</th>
-                        <th>Total Mercancías</th>
+                        <th>Numero de Orden</th>
+                        <th>Nombre cliente</th>
+                        <th>Total pedidos</th>
                         <th>Total Peso (kg)</th>
                         <th>Total Metros Cúbicos</th>
-                        <th>Total Cantidad Bultos</th>
+                        <th>Total Bultos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,12 +43,15 @@ const TablaEnvios = ({ datos, onSeleccionar }) => {
                             <tr key={item.id_envio}>
                                 <td className="table-striped table-success"style={{textAlign:'center'} }>
                                     <input
-                                        class="form-check-input " type="checkbox" style={{height:'20px' , width: '20px'} }
+                                        class="form-check-input " 
+                                        type="checkbox" 
+                                        style={{height:'20px' , width: '20px'}}
                                         checked={seleccionados.includes(item.id_envio)}
                                         onChange={() => toggleSeleccion(item.id_envio)}
                                     />
                                 </td>
-                                <td>{item.id_envio}</td>
+                                <td>{item.numero_orden}</td>
+                                <td>{item.nombre}</td>
                                 <td>{item.total_mercancias}</td>
                                 <td>{parseFloat(item.total_peso).toFixed(2)} kg</td>
                                 <td>{parseFloat(item.total_metros_cubicos).toFixed(2)} m³</td>

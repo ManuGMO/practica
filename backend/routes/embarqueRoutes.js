@@ -4,8 +4,21 @@ const router = express.Router();
 import { db } from "../config/db.js";
 
 router.get("/getEnvios",  (req, res) => {
-    db.query('SELECT m.id_envio, COUNT(*) AS total_mercancias, SUM(m.peso) AS total_peso,SUM(m.metros_cubicos) AS total_metros_cubicos,SUM(m.cantidad_bultos) AS total_cantidad_bultos FROM mercancia m JOIN envios e ON m.id_envio = e.id_envio WHERE e.id_embarque IS NULL GROUP BY m.id_envio ORDER BY m.id_envio ASC',
-            (err,result) => {
+
+    const sql= `SELECT
+                    e.id_envio, COUNT(*) AS total_envios,
+                    o.numero_orden, COUNT(*) AS total_mercancias,
+                    c.nombre,
+                    SUM(m.peso) AS total_peso,
+                    SUM(m.metros_cubicos) AS total_metros_cubicos,
+                    SUM(m.cantidad_bultos) AS total_cantidad_bultos 
+                FROM mercancia m 
+                JOIN envios e ON m.id_envio = e.id_envio
+                JOIN ordenes o ON e.id_envio = o.id_envio
+                JOIN clientes c ON e.id_cliente = c.id_cliente
+                WHERE e.id_embarque IS NULL GROUP BY m.id_envio ORDER BY m.id_envio ASC `;
+
+    db.query(sql,(err,result) => {
                 if(err){
                     console.error("Error obteniendo datos de mercancía:", err);
                     res.status(500).json({ error: "Error al obtener los datos" });

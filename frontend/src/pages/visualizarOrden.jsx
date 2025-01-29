@@ -35,6 +35,12 @@ const fechaReal = new Date(envioData.fecha).toLocaleDateString("es-CL", {year: "
 
   return (
     <div className="orden-confirmada container mt-5">
+            <div>
+                <button onClick={() => window.history.back()} className="btn btn-outline-success">
+                    <i className="bi bi-arrow-left-square-fill"></i>
+                    <span style={{ marginLeft: "8px" }}>Atrás</span>
+                </button>
+            </div>
     <h3 className="text-center">Orden Confirmada</h3>
     <div className="row mt-4">
         {/* Columna para Datos del Cliente */}
@@ -107,7 +113,7 @@ const fechaReal = new Date(envioData.fecha).toLocaleDateString("es-CL", {year: "
 
     {/* Botón para nuevo formulario */}
     <div className="text-center mb-5">
-        <Link to="/" className="btn btn-success">
+        <Link to="/formulario" className="btn btn-success">
             Nuevo formulario
         </Link>
     </div>

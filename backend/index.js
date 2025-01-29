@@ -17,6 +17,7 @@ import formularioRoutes from './routes/formularioRoutes.js';
 import visualizarRoutes from './routes/visualizarRoutes.js'
 import embarqueRoutes from './routes/embarqueRoutes.js';
 import listaRoutes from './routes/listaRoutes.js'
+import historialEmbarques from './routes/historialEmbarqueRoutes.js'
 
 
 
@@ -24,7 +25,7 @@ app.use('/api', formularioRoutes);
 app.use('/api',embarqueRoutes);
 app.use('/api', listaRoutes);
 app.use('/api', visualizarRoutes);
-
+app.use('/api', historialEmbarques);
 
 
 

@@ -5,6 +5,7 @@ import Formulario from './pages/formulario'; // Suponiendo que el formulario est
 import Home from './pages/Home';
 import Embarque from './pages/embarque';
 import Lista from './pages/lista';
+import HistorialEmbarques from './pages/historial_embarques';
 
 const App = () => {
   
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/formulario" element={<Formulario/>}/>
           <Route path="/formulario/orden/:numero_orden" element={<VisualizarOrden/>}/>
           <Route path="/embarque" element={<Embarque/>}/>
+          <Route path="/embarque/historial" element={<HistorialEmbarques/>}/>
           <Route path="/lista" element={<Lista/>}/>
         </Routes>
     </Router>

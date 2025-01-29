@@ -1,0 +1,16 @@
+.volver_embarque {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;  /* Asegura alineación vertical */
+    gap: 8px; /* Espacio entre el icono y el texto */
+    height: 40px;
+}
+
+.volver_embarque i {
+    font-size: 1.5rem;
+}
+
+
+.container_button {
+    transform: translateX(-80px);
+}

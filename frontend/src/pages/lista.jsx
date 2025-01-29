@@ -26,6 +26,14 @@ const Lista = () => {
 
     return (
         <div className='container'>
+            <div className="d-flex justify-content-between align-items-start mt-3 mb-1">
+            <div>
+                <a href="/" type="button" className="btn btn-outline-success">
+                    <i className="bi bi-arrow-left-square-fill"></i>
+                    <span style={{ marginLeft: "8px" }}>Atrás</span>
+                </a>
+            </div>
+        </div>
             <h2 className="text-center mt-3 mb-5">Lista de embarques</h2>
             {loading ? (
                 <p>Cargando datos...</p>

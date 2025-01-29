@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import VisualizarOrden from './visualizarOrden';
-
+import '../styles/formulario.css';
 import { add, buscarCliente, agregar, cancelarEnvio, crearNumeroOrden } from '../services/formularioService';
 
 
@@ -182,6 +182,12 @@ const remove = (index) => {
       <div className="formula" >       
 
         <div className='form-container'>
+        <div className='container_button'>
+                    <a href="/" type="button" className="volver_embarque btn btn-outline-success">
+                        <i class="bi bi-arrow-left-square-fill"></i>
+                        Atras
+                    </a>
+                </div>
 
           <div className="col-md-6 datos" onKeyDown={handleKeyDown}>
               <h3>Formulario de Cliente</h3>
@@ -273,7 +279,7 @@ const remove = (index) => {
             </div>
 
             <div className="input-group input-group-sm mb-1">
-                <span class="input-group-text" id="basic-addon9">Lugar:</span>
+                <span class="input-group-text" id="basic-addon9">Lugar de envio:</span>
                 <input 
                     onChange={(event) => setLugar(event.target.value)} 
                     type="text" id="lugar" name="lugar" placeholder="Ingrese el lugar" 
