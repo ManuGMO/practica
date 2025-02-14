@@ -14,3 +14,8 @@
 .container_button {
     transform: translateX(-80px);
 }
+
+.formula {
+    display: table;
+    width: 100%;
+}

@@ -72,9 +72,9 @@ a {
 }
 
 .tm-nav-link:hover i {
-    color: #FF5733; /* Cambia a otro color al pasar el mouse */
-    transform: scale(1.1); /* Aumenta ligeramente el tamaño */
-    transition: color 0.3s ease, transform 0.3s ease; /* Agrega una transición suave */
+    color: #FF5733; 
+    transform: scale(1.1); 
+    transition: color 0.3s ease, transform 0.3s ease; 
     
 }
 

@@ -9,9 +9,10 @@ router.get("/visualizar/:numero_orden", (req, res) => {
     const sql = `
         SELECT 
             o.numero_orden, 
-            e.id_envio, e.lugar, e.fecha, e.ciudad_origen, e.ciudad_destino, e.lugar_recogida, e.lugar_entrega,
+            e.id_envio, e.condicion_pago, e.fecha, e.ciudad_origen, e.ciudad_destino, e.lugar_recogida, e.lugar_entrega,
             c.rut, c.nombre, c.direccion, c.actividad_economica, c.comuna, c.ciudad, c.region, c.telefono,
-            m.descripcion, m.tipo_pago, m.num_documento, m.proveedor, m.peso, m.metros_cubicos, m.tipo_bulto, m.cantidad_bultos
+            m.descripcion, m.tipo_pago, m.num_documento, m.proveedor, m.rut_proveedor, m.precio_unitario, m.peso_unidad, 
+            m.metros_cubicos, m.tipo_bulto, m.cantidad_bultos, m.peso_total, m.precio_iva, m.monto_documento
         FROM ordenes o
         JOIN envios e ON o.id_envio = e.id_envio
         JOIN clientes c ON e.id_cliente = c.id_cliente
@@ -28,7 +29,7 @@ router.get("/visualizar/:numero_orden", (req, res) => {
             // Separar los datos de la primera fila como cliente/envío y los demás como mercancía
             const envioData = {
                 id_envio: results[0].id_envio,
-                lugar: results[0].lugar,
+                condicion: results[0].condicion_pago,
                 fecha: results[0].fecha,
                 origen: results[0].ciudad_origen,
                 destino: results[0].ciudad_destino,
@@ -52,10 +53,16 @@ router.get("/visualizar/:numero_orden", (req, res) => {
                 tipo_pago: row.tipo_pago,
                 num_documento: row.num_documento,
                 proveedor: row.proveedor,
-                peso: row.peso,
+                rut_proveedor: row.rut_proveedor,
+                precio_unitario: row.precio_unitario,
+                peso_unidad: row.peso_unidad,
+                peso_total: row.peso_total,
                 metros_cubicos: row.metros_cubicos,
                 tipo_bulto: row.tipo_bulto,
-                cantidad_bultos: row.cantidad_bultos
+                cantidad_bultos: row.cantidad_bultos,
+                precio_total: row.precio_total,
+                precio_iva: row.precio_iva,
+                monto_documento: row.monto_documento
             }));
 
             res.json({ clienteData, envioData, mercancia });

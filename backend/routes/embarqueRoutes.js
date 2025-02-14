@@ -9,9 +9,12 @@ router.get("/getEnvios",  (req, res) => {
                     e.id_envio, COUNT(*) AS total_envios,
                     o.numero_orden, COUNT(*) AS total_mercancias,
                     c.nombre,
-                    SUM(m.peso) AS total_peso,
+                    c.rut,
+                    SUM(m.peso_total) AS total_peso,
                     SUM(m.metros_cubicos) AS total_metros_cubicos,
-                    SUM(m.cantidad_bultos) AS total_cantidad_bultos 
+                    SUM(m.cantidad_bultos) AS total_cantidad_bultos,
+                    e.ciudad_origen,
+                    e.ciudad_destino
                 FROM mercancia m 
                 JOIN envios e ON m.id_envio = e.id_envio
                 JOIN ordenes o ON e.id_envio = o.id_envio

@@ -18,14 +18,24 @@ import visualizarRoutes from './routes/visualizarRoutes.js'
 import embarqueRoutes from './routes/embarqueRoutes.js';
 import listaRoutes from './routes/listaRoutes.js'
 import historialEmbarques from './routes/historialEmbarqueRoutes.js'
+import historialOrdenes from './routes/historialOrdenesRoutes.js'
+
+import authRoutes from './routes/authRoutes.js';
+import authMiddleware from './middleware/authMiddleware.js';
 
 
+app.use('/api/auth', authRoutes);
+
+app.get('/api/protegido', authMiddleware, (req, res) => {
+    res.json({ message: "Accediste a una ruta protegida", user: req.user });
+});
 
 app.use('/api', formularioRoutes);
-app.use('/api',embarqueRoutes);
-app.use('/api', listaRoutes);
-app.use('/api', visualizarRoutes);
-app.use('/api', historialEmbarques);
+app.use('/api',  embarqueRoutes);
+app.use('/api',  listaRoutes);
+app.use('/api',  visualizarRoutes);
+app.use('/api',  historialEmbarques);
+app.use('/api', historialOrdenes);
 
 
 

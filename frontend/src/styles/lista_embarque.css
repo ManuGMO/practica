@@ -1,0 +1,46 @@
+
+.contenedor-principal {
+    width: 100vw; /* Ocupa todo el ancho de la pantalla */
+    padding: 0 20px; /* Agrega un pequeño padding en los lados */
+    display: block;
+    justify-content: center; /* Centra el contenido horizontalmente */
+}
+
+.mi-tabla {
+    width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+    border-collapse: collapse; /* Fusiona los bordes */
+    border-spacing: 0 10px; /* Agrega espacio entre grupos */
+}
+
+.mi-tabla td {
+    border: none; /* Elimina los bordes de las celdas */
+    padding: 8px; /* Espaciado interno para mejor visualización */
+    text-align: center; /* Centra el texto dentro de las celdas */
+}
+
+/*-------------------Color tabla ---------------*/
+
+.mi-tabla tbody tr:nth-child(4n-3),
+.mi-tabla tbody tr:nth-child(4n-2) {
+    background-color: #fafafa; /* Color para un embarque (dos filas) */
+}
+
+.mi-tabla tbody tr:nth-child(4n-1),
+.mi-tabla tbody tr:nth-child(4n) {
+    background-color: #ffffff; /* Color para el siguiente embarque (dos filas) */
+}
+
+/*-------------------Borde tabla ---------------*/
+
+
+
+
+
+
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6; /* Bordes para las celdas */
+    padding: 8px; /* Espaciado interno */
+    text-align: center; /* Centra el texto dentro de las celdas */
+}

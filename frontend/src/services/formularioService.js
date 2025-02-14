@@ -19,7 +19,7 @@ export const add = async (clienteData, envioData) => {
 export const buscarCliente = async (rut) => {
     try {
         console.log("Holaaaaa");
-        const response = await Axios.get(`http://localhost:3001/api/getCliente/${rut}`);
+        const response = await Axios.get(`http://localhost:3001/api/getCliente/${rut}`,{ withCredentials: true });
         console.log(response.data); // Aquí deberías ver los datos si todo funciona.
         return response.data; // Devuelve el dato para ser usado en el frontend.
     } catch (error) {
@@ -74,3 +74,28 @@ function generarNumeroOrden(seed) {
  
     return String(randomNumber).padEnd(9, '0'); 
 }
+
+
+export const actualizarEnvio = async (numero_orden, clienteData, envioData) => {
+    try {
+
+        const response = await Axios.put(`http://localhost:3001/api/envio/${numero_orden}`, {
+            cliente: clienteData,
+            envio: envioData
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error al actualizar el envío:", error);
+        throw error;
+    }
+};
+
+export const actualizarMercancias = async (numero_orden, mercancias) => {
+    try {
+        const response = await Axios.put(`http://localhost:3001/api/actualizarMercancias/${numero_orden}`, mercancias);
+        return response.data;
+    } catch (error) {
+        console.error("Error al actualizar mercancías:", error);
+        throw error;
+    }
+};

@@ -36,10 +36,15 @@ router.get("/mercanciasEmbarque/:id_embarque", async (req, res) => {
         m.tipo_pago, 
         m.num_documento, 
         m.proveedor, 
-        m.peso, 
+        m.rut_proveedor, 
+        m.precio_unitario, 
+        m.peso_unidad, 
         m.metros_cubicos, 
         m.tipo_bulto, 
-        m.cantidad_bultos
+        m.cantidad_bultos, 
+        m.peso_total, 
+        m.precio_iva, 
+        m.monto_documento
     FROM embarques e
     JOIN envios v ON e.id_embarque = v.id_embarque
     JOIN mercancia m ON v.id_envio = m.id_envio
