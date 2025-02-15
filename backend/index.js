@@ -1,10 +1,18 @@
 import express from 'express';
 const app = express();
+import cookieParser from "cookie-parser";
 
 import cors from 'cors';
 
 const PORT = 3001;
-app.use(cors());
+
+app.use(cookieParser());  // Middleware para manejar cookies
+
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true   // Permitir cookies en el frontend
+}));
+
 app.use(express.json());
 
 app.listen(PORT,()=>{
@@ -26,9 +34,6 @@ import authMiddleware from './middleware/authMiddleware.js';
 
 app.use('/api/auth', authRoutes);
 
-app.get('/api/protegido', authMiddleware, (req, res) => {
-    res.json({ message: "Accediste a una ruta protegida", user: req.user });
-});
 
 app.use('/api', formularioRoutes);
 app.use('/api',  embarqueRoutes);

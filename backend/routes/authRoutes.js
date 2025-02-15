@@ -58,6 +58,12 @@ router.post("/login", async (req, res) => {
 
         // Crear token JWT
         const token = jwt.sign({ rut: user[0].rut }, "secreto", { expiresIn: "1h" });
+        
+        res.cookie("token", token, {
+            httpOnly: true,   // Evita acceso desde JS
+            secure: false,    // Cambia a `true` en producción con HTTPS
+            sameSite: "Strict"
+        });
 
         res.json({ token });
     } catch (error) {
@@ -65,5 +71,30 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Error en el servidor" });
     }
 });
+
+router.get("/validate", (req, res) => {
+
+    console.log("Cookies recibidas:", req.cookies); 
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ message: "No autorizado" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, "secreto");
+        console.log("Decoded: ", decoded);
+        res.json({ user: decoded });
+    } catch (error) {
+        res.status(403).json({ message: "Token inválido" });
+    }
+});
+
+router.post("/logout", (req, res) => {
+    res.clearCookie("token"); // Elimina la cookie del token
+    res.json({ message: "Logout exitoso" });
+});
+
+
 
 export default router;

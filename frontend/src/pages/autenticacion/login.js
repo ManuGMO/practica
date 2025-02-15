@@ -13,7 +13,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:3001/api/auth/login", { rut, password });
+            const res = await axios.post("http://localhost:3001/api/auth/login", { rut, password },{ withCredentials: true });
             login(res.data);  // Guarda el usuario en AuthContext
             navigate("/");  // Redirige al usuario
         } catch (error) {

@@ -1,8 +1,9 @@
 import axios from "axios";
+axios.defaults.withCredentials = true; 
 
 export const getHistorialOrdenes = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/historialOrdenes`);
+        const response = await axios.get(`http://localhost:3001/api/historialOrdenes`,{withCredentials: true});
         console.log('miau', response.data);
         return response.data;
     } catch (error) {

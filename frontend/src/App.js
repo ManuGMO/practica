@@ -9,15 +9,18 @@ import HistorialEmbarques from './pages/embarque/historial_embarques';
 import HistorialOrdenes from './pages/orden_flete/historial_ordenes';
 import FormularioEdicion from './pages/orden_flete/formularioEdicion';
 import Register from './pages/autenticacion/register';
+import axios from "axios";
+
 
 import { AuthProvider, AuthContext } from './AuthContext';
 import Login from './pages/autenticacion/login';
 
 const PrivateRoute = ({ element }) => {
-  const { user } = React.useContext(AuthContext);
-  const isAuthenticated = user || JSON.parse(localStorage.getItem("user"));
+  const { user, loading } = React.useContext(AuthContext);
 
-  return isAuthenticated ? element : <Navigate to="/login" />;
+  if (loading) return <p>Cargando...</p>; // ⏳ Muestra un mensaje mientras se valida la sesión
+
+  return user ? element : <Navigate to="/login" />;
 };
 
 const App = () => {
