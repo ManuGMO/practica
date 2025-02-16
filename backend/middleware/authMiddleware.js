@@ -1,18 +1,22 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
+    const token = req.cookies.token;
+    console.log("token: ", token);
+
+    if (!token) {
+        console.log("Usuario no autenticado en authMiddleware");
+        return res.status(401).json({ message: "No autorizado" });
+    }
+
     try {
-        const token = req.cookies.token; // Obtiene la cookie con el token
-
-        if (!token) {
-            return res.status(401).json({ message: "No autorizado. Token no encontrado." });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secreto'); // Decodifica el token
-        req.user = decoded; // Guarda los datos en la request
-        next(); // Continúa al siguiente middleware o controlador
+        const decoded = jwt.verify(token, "secreto"); // Decodifica el token
+        console.log("Usuario decodificado:", decoded);
+        req.user = decoded; // Guarda el usuario en req.user
+        next();
     } catch (error) {
-        return res.status(403).json({ message: "Token inválido o expirado." });
+        console.error("Error al verificar el token:");
+        res.status(403).json({ message: "Token inválido" });
     }
 };
 

@@ -30,17 +30,20 @@ import historialOrdenes from './routes/historialOrdenesRoutes.js'
 
 import authRoutes from './routes/authRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
+import roleMiddleware from "./middleware/roleMiddleware.js";
+
+
 
 
 app.use('/api/auth', authRoutes);
 
 
-app.use('/api', formularioRoutes);
-app.use('/api',  embarqueRoutes);
-app.use('/api',  listaRoutes);
-app.use('/api',  visualizarRoutes);
-app.use('/api',  historialEmbarques);
-app.use('/api', historialOrdenes);
+app.use('/api/formulario', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), formularioRoutes);
+app.use('/api/embarque', authMiddleware, roleMiddleware(["admin", "jefe"]), embarqueRoutes);
+app.use('/api/lista', authMiddleware, roleMiddleware(["admin"]), listaRoutes);
+app.use('/api/visualizar', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), visualizarRoutes);
+app.use('/api/historialEmbarques', authMiddleware, roleMiddleware(["admin", "jefe"]), historialEmbarques);
+app.use('/api/historialOrdenes', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), historialOrdenes);
 
 
 

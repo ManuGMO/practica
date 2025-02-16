@@ -7,7 +7,7 @@ export const add = async (clienteData, envioData) => {
         const datos = {...clienteData, envioData};
         console.log("Datos enviados al backend:", datos);
 
-        const response = await Axios.post("http://localhost:3001/api/createCliente", datos);
+        const response = await Axios.post("http://localhost:3001/api/formulario/createCliente", datos);
 
         return response.data.id_envios; 
     }catch(error){
@@ -19,7 +19,7 @@ export const add = async (clienteData, envioData) => {
 export const buscarCliente = async (rut) => {
     try {
         console.log("Holaaaaa");
-        const response = await Axios.get(`http://localhost:3001/api/getCliente/${rut}`,{ withCredentials: true });
+        const response = await Axios.get(`http://localhost:3001/api/formulario/getCliente/${rut}`,{ withCredentials: true });
         console.log(response.data); // Aquí deberías ver los datos si todo funciona.
         return response.data; // Devuelve el dato para ser usado en el frontend.
     } catch (error) {
@@ -30,7 +30,7 @@ export const buscarCliente = async (rut) => {
 
 export const agregar = async (mercanciasData) =>{
     try {
-        await Axios.post("http://localhost:3001/api/agregarMercancias", mercanciasData);
+        await Axios.post("http://localhost:3001/api/formulario/agregarMercancias", mercanciasData);
         alert("Mercancías registradas");
       } catch (error) {
         console.error("Error al registrar mercancías:", error);
@@ -39,7 +39,7 @@ export const agregar = async (mercanciasData) =>{
     };
 
 export const cancelarEnvio = (id_envio) => {
-    return Axios.delete(`http://localhost:3001/api/eliminarEnvio/${id_envio}`)
+    return Axios.delete(`http://localhost:3001/api/formulario/eliminarEnvio/${id_envio}`)
         .then(() => {
             alert("El envío fue eliminado correctamente.");
         })
@@ -52,7 +52,7 @@ export const crearNumeroOrden = async (id_envio) => {
     try {
         const numero_orden = generarNumeroOrden(id_envio);
 
-        const response = await Axios.post('http://localhost:3001/api/crearNumero', {
+        const response = await Axios.post('http://localhost:3001/api/formulario/crearNumero', {
             id_envio,
             numero_orden
         });
@@ -79,7 +79,7 @@ function generarNumeroOrden(seed) {
 export const actualizarEnvio = async (numero_orden, clienteData, envioData) => {
     try {
 
-        const response = await Axios.put(`http://localhost:3001/api/envio/${numero_orden}`, {
+        const response = await Axios.put(`http://localhost:3001/api/formulario/envio/${numero_orden}`, {
             cliente: clienteData,
             envio: envioData
         });
@@ -92,7 +92,7 @@ export const actualizarEnvio = async (numero_orden, clienteData, envioData) => {
 
 export const actualizarMercancias = async (numero_orden, mercancias) => {
     try {
-        const response = await Axios.put(`http://localhost:3001/api/actualizarMercancias/${numero_orden}`, mercancias);
+        const response = await Axios.put(`http://localhost:3001/api/formulario/actualizarMercancias/${numero_orden}`, mercancias);
         return response.data;
     } catch (error) {
         console.error("Error al actualizar mercancías:", error);

@@ -5,22 +5,20 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true); // 👈 Evita loading infinito
+    const [loading, setLoading] = useState(true);
 
-    // 🔥 Verifica la sesión con /auth/validate al cargar la app
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 const res = await axios.get("http://localhost:3001/api/auth/validate", {
-                    withCredentials: true, // 👈 Asegura que se envíe la cookie con el token
+                    withCredentials: true,
                 });
-                console.log("res data: ", res.data);
-                setUser(res.data.user); // 🟢 Guarda el usuario
+                setUser(res.data.user);
             } catch (error) {
                 console.error("Sesión no válida:", error.response?.data?.message);
                 setUser(null);
             } finally {
-                setLoading(false); // ⏳ Evita loading infinito
+                setLoading(false);
             }
         };
         checkAuth();

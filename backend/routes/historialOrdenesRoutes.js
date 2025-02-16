@@ -3,7 +3,8 @@ const router = express.Router();
 import { db } from "../config/db.js";
 import  authMiddleware  from "../middleware/authMiddleware.js";
 
-router.get("/historialOrdenes", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
+    
         const sql = `
             SELECT 
                 e.id_envio,

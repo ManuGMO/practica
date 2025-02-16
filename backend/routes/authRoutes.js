@@ -2,14 +2,53 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import { db } from '../config/db.js';
 import jwt from 'jsonwebtoken';
+import authMiddleware from '../middleware/authMiddleware.js';
+import roleMiddleware from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-// Registrar usuario
-router.post("/register", async (req, res) => {
-    const { rut, password } = req.body;
+router.get("/users", authMiddleware, roleMiddleware(["admin"]), async (req, res) => {
+    try {
+        const [users] = await db.promise().query("SELECT rut, nombre, role FROM usuarios");
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al obtener los usuarios" });
+    }
+});
 
-    if (!rut || !password) {
+
+router.delete("/users/:rut", authMiddleware, roleMiddleware(["admin"]), async (req, res) => {
+    const { rut } = req.params;
+
+    if (!rut) {
+        return res.status(400).json({ message: "El RUT es obligatorio" });
+    }
+
+    try {
+        // Verificar si el usuario existe
+        const [user] = await db.promise().query("SELECT * FROM usuarios WHERE rut = ?", [rut]);
+
+        if (user.length === 0) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        // Eliminar usuario
+        await db.promise().query("DELETE FROM usuarios WHERE rut = ?", [rut]);
+
+        res.status(200).json({ message: "Usuario eliminado correctamente" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al eliminar el usuario" });
+    }
+});
+
+
+// Registrar usuario
+router.post("/register", authMiddleware, roleMiddleware(["admin"]), async (req, res) => {
+    const { rut, nombre, password, role } = req.body;
+
+    if (!rut || !nombre || !password || !role) {
         return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
 
@@ -26,7 +65,7 @@ router.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Guardar en la base de datos
-        await db.promise().query("INSERT INTO usuarios (rut, password) VALUES (?, ?)", [rut, hashedPassword]);
+        await db.promise().query("INSERT INTO usuarios (rut, nombre, password, role) VALUES (?, ?, ?, ?)", [rut, nombre, hashedPassword, role]);
 
         res.status(201).json({ message: "Usuario registrado correctamente" });
     } catch (error) {
@@ -44,11 +83,15 @@ router.post("/login", async (req, res) => {
     }
 
     try {
+        console.log("Solicitud recibida:", req.body);
+
         const [user] = await db.promise().query("SELECT * FROM usuarios WHERE rut = ?", [rut]);
 
         if (user.length === 0) {
             return res.status(400).json({ message: "Usuario no encontrado" });
         }
+
+        console.log("Usuario encontrado:", user[0]);
 
         // Comparar contraseña encriptada
         const validPassword = await bcrypt.compare(password, user[0].password);
@@ -56,21 +99,26 @@ router.post("/login", async (req, res) => {
             return res.status(401).json({ message: "Contraseña incorrecta" });
         }
 
-        // Crear token JWT
-        const token = jwt.sign({ rut: user[0].rut }, "secreto", { expiresIn: "1h" });
-        
+        // Crear token con `rut` y `role`
+        const token = jwt.sign(
+            { rut: user[0].rut, role: user[0].role }, 
+            "secreto", 
+            { expiresIn: "2h" }
+        );
+
         res.cookie("token", token, {
-            httpOnly: true,   // Evita acceso desde JS
-            secure: false,    // Cambia a `true` en producción con HTTPS
+            httpOnly: true,  
+            secure: false,    
             sameSite: "Strict"
         });
 
-        res.json({ token });
+        res.json({ rut: user[0].rut, role: user[0].role });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error en el servidor" });
     }
 });
+
 
 router.get("/validate", (req, res) => {
 

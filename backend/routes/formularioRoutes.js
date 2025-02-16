@@ -8,7 +8,7 @@ import { db } from "../config/db.js";
 
 
 // Ruta para crear cliente
-router.post('/createCliente', (req, res) => {
+router.post('/formulario/createCliente', (req, res) => {
     const { rut, nombre, direccion, actividad, comuna, ciudad, region, telefono, envioData } = req.body;
 
     db.query('SELECT id_cliente FROM clientes WHERE rut = ?', [rut], (err, result) => {
@@ -58,7 +58,7 @@ function registrarEnvio(id_cliente, envioData, res) {
 
 
 // Aquí puedes agregar más rutas relacionadas con el formulario
-router.get("/getCliente/:rut", (req, res) => {
+router.get("/formulario/getCliente/:rut", (req, res) => {
     const rut = req.params.rut;
     console.log("📌 db:", db);
     db.query('SELECT * FROM clientes WHERE rut = ?', [rut], (err, result) => {
@@ -76,7 +76,7 @@ router.get("/getCliente/:rut", (req, res) => {
 });
 
 
-router.post("/agregarMercancias", (req, res) => {
+router.post("/formulario/agregarMercancias", (req, res) => {
     const mercancias = req.body; // Recibimos un array de objetos de mercancías
 
     if (!Array.isArray(mercancias) || mercancias.length === 0) {
@@ -114,7 +114,7 @@ router.post("/agregarMercancias", (req, res) => {
 });
 
 
-router.delete("/eliminarEnvio/:id_envio", (req, res) => {
+router.delete("/formulario/eliminarEnvio/:id_envio", (req, res) => {
     const { id_envio } = req.params;
 
     console.log("ID del envío a eliminar:", id_envio); // LOG PARA DEPURAR
@@ -135,7 +135,7 @@ router.delete("/eliminarEnvio/:id_envio", (req, res) => {
     });
 });
 
-router.post("/crearNumero", (req, res) => {
+router.post("/formulario/crearNumero", (req, res) => {
     const { id_envio, numero_orden } = req.body;
 
     db.query(
@@ -153,7 +153,7 @@ router.post("/crearNumero", (req, res) => {
 });
 
 
-router.get("/envio/:numero_orden", (req, res) => {
+router.get("/formulario/envio/:numero_orden", (req, res) => {
     const { numero_orden } = req.params;
 
     const sql = `
