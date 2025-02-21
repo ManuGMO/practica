@@ -40,7 +40,7 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/formulario', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), formularioRoutes);
 app.use('/api/embarque', authMiddleware, roleMiddleware(["admin", "jefe"]), embarqueRoutes);
-app.use('/api/lista', authMiddleware, roleMiddleware(["admin"]), listaRoutes);
+app.use('/api/listaEmbarques', authMiddleware, roleMiddleware(["admin"]), listaRoutes);
 app.use('/api/visualizar', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), visualizarRoutes);
 app.use('/api/historialEmbarques', authMiddleware, roleMiddleware(["admin", "jefe"]), historialEmbarques);
 app.use('/api/historialOrdenes', authMiddleware, roleMiddleware(["admin", "jefe", "ayudante"]), historialOrdenes);

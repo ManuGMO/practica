@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import '../../styles/admin.css';
 
 const AdminPanel = () => {
     const { user } = useContext(AuthContext);
@@ -86,10 +87,54 @@ const AdminPanel = () => {
     
 
     return (
+        
+        <div > 
+        <div className=" justify-content-center w-100  ">
+        
+            <nav className="navbar bg-primary navbar-expand-lg mb-2" data-bs-theme="dark">
+                <div className="container-fluid">
+                {/* Botón Volver a la izquierda */}
+                <button className="navbar-brand btn btn-primary-subtle" onClick={() => window.history.back()}>
+                    <i className="bi bi-arrow-bar-left" style={{ color: "white", marginRight: "7px" }}></i>
+                    Volver
+                </button>
+
+                {/* Botón de colapsar para pantallas pequeñas */}
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+
+                {/* Contenedor de navegación */}
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul className="navbar-nav w-100 d-flex justify-content-between">
+                    {/* Embarques alineado a la izquierda */}
+                    <li className="nav-item">
+                        
+                    </li>
+
+                    {/* Home centrado */}
+                    <li className="nav-item ">
+                    <button className="navbar-brand btn btn-primary" onClick={()=> window.location.href = '/'}>
+                        <i className="bi bi-house-door" style={{ color: "white", marginRight: "7px" }}></i>
+                        Home
+                    </button>
+                    </li>
+
+                    {/* Historial de órdenes alineado a la derecha */}
+                    <li className="nav-item">
+
+                    </li>
+                    </ul>
+                </div>
+                </div>
+            </nav>
+        </div>
+
         <div className="d-flex">
+
             {/* Panel izquierdo - Formulario de registro */}
             <div className="p-4 border-end" style={{ width: "30%" }}>
-                <h2>Registrar Usuario</h2>
+                <h2 className="mb-4">Registrar Usuario</h2>
                 <form onSubmit={handleRegister}>
                     <div className="mb-3">
                         <label htmlFor="rut" className="form-label">RUT</label>
@@ -105,7 +150,7 @@ const AdminPanel = () => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="role" className="form-label">Rol</label>
-                        <select id="role" className="form-control" value={role} onChange={(e) => setRole(e.target.value)}>
+                        <select id="role" className="form-select" value={role} onChange={(e) => setRole(e.target.value)}>
                             <option value="admin">Administrador</option>
                             <option value="jefe">Jefe de bodega</option>
                             <option value="ayudante">Ayudante de bodega</option>
@@ -117,33 +162,42 @@ const AdminPanel = () => {
 
             {/* Panel derecho - Tabla de usuarios */}
             <div className="p-4" style={{ width: "70%" }}>
-                <h2>Usuarios Registrados</h2>
-                <table className="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>RUT</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usuarios.map((usuario) => (
-                            <tr key={usuario.rut}>
-                                <td>{usuario.nombre || ""}</td>
-                                <td>{usuario.rut}</td>
-                                <td>{roleMap[usuario.role]}</td>
-                                <td>
-                                    {usuario.rut !== user.rut && (
-                                        <button className="btn btn-danger" onClick={() => handleDelete(usuario.rut)}>Eliminar</button>
-                                    )}
-                                </td>
+                <h2 className="mb-5" >Usuarios Registrados</h2>
+                <div className="table-responsive"> {/* Hace que la tabla sea responsive */}
+                    <table className="table table-hover table-striped table-bordered shadow-sm" >
+                        <thead className="thead-dark"> {/* Fondo oscuro para el encabezado */}
+                            <tr>
+                                <th scope="col" className="text-center">Nombre</th>
+                                <th scope="col" className="text-center">RUT</th>
+                                <th scope="col" className="text-center">Rol</th>
+                                <th scope="col" className="text-center">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {usuarios.map((usuario) => (
+                                <tr key={usuario.rut} className="align-middle"> {/* Alinea el contenido verticalmente al centro */}
+                                    <td className="text-center">{usuario.nombre || ""}</td>
+                                    <td className="text-center">{usuario.rut}</td>
+                                    <td className="text-center">{roleMap[usuario.role]}</td>
+                                    <td className="text-center">
+                                        {usuario.rut !== user.rut && (
+                                            <button
+                                                className="btn btn-danger btn-sm" // Botón más pequeño
+                                                onClick={() => handleDelete(usuario.rut)}
+                                            >
+                                                <i className="fas fa-trash-alt"></i> Eliminar {/* Icono de FontAwesome */}
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
+    </div>
     );
 };
 

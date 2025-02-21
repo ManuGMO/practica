@@ -15,9 +15,14 @@ const Lista = () =>  {
     const [filters, setFilters] = useState({ numero_embarque: '' }); // Estado para el filtro
     const [filteredEmbarques, setFilteredEmbarques] = useState(embarques); // Estado para los embarques filtrados
     const [filterNombreCliente, setFilterNombreCliente] = useState(""); // Nuevo estado para filtrar por nombre de cliente
+    const [filterNombreProveedor, setFilterNombreProveedor] = useState("");
 
     const handleFilterNombreCliente = (event) => {
         setFilterNombreCliente(event.target.value);
+    };
+
+    const handleFilterNombreProveedor = (event) => {
+        setFilterNombreProveedor(event.target.value);
     };
 
     useEffect(() => {
@@ -277,7 +282,20 @@ const Lista = () =>  {
                                                                 className="form-control"
                                                                 style={{ width: '200px' }}
                                                             />
+                                                            <label htmlFor="filter-nombre-proveedor" style={{ marginRight: '10px',marginLeft:"50px", fontWeight: 'bold' }}>
+                                                                Filtrar por Nombre Proveedor:
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                id="filter-nombre-proveedor"
+                                                                value={filterNombreProveedor}
+                                                                onChange={handleFilterNombreProveedor}
+                                                                placeholder="Ingrese nombre proveedor"
+                                                                className="form-control"
+                                                                style={{ width: '200px' }}
+                                                            />
                                                         </div>
+                                                        
                                                     </th>
                                                 </tr>
                                                 <tr>
@@ -302,32 +320,58 @@ const Lista = () =>  {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            {mercancias[embarque.id_embarque]
-                        ?.filter((mercancia) =>
-                            mercancia.nombre.toLowerCase().includes(filterNombreCliente.toLowerCase())
-                        )
-                        .map((mercancia, index) => (
-                                                    <tr key={index}>
-                                                        <td>{new Date(mercancia.fecha).toLocaleDateString()}</td>
-                                                        <td>{mercancia.numero_orden}</td>
-                                                        <td>{mercancia.tipo_pago}</td>
-                                                        <td>{mercancia.num_documento}</td>  
-                                                        <td>{mercancia.rut_proveedor}</td>
-                                                        <td>{mercancia.proveedor}</td>
-                                                        <td>{Number(mercancia.monto_documento).toLocaleString()}</td>
-                                                        <td>{mercancia.condicion_pago}</td>
-                                                        <td>{mercancia.descripcion}</td>
-                                                        <td>{mercancia.rut}</td>
-                                                        <td>{mercancia.nombre}</td>
-                                                        <td>{mercancia.cantidad_bultos}</td>
-                                                        <td>{mercancia.peso_unidad}</td>
-                                                        <td>{mercancia.peso_total}</td>
-                                                        <td>{mercancia.metros_cubicos}</td>                                                       
-                                                        <td>{Number(mercancia.precio_unitario).toLocaleString()}</td>                                                       
-                                                        <td>{Number(mercancia.precio_iva).toLocaleString()}</td>                                                       
-                                                        
-                                                    </tr>
-                                                ))}
+                                                {(() => {
+                                                    // Aplicamos el filtro para obtener solo las mercancías visibles
+                                                    const filteredMercancias = mercancias[embarque.id_embarque]?.filter((mercancia) =>
+                                                        mercancia.nombre.toLowerCase().includes(filterNombreCliente.toLowerCase()) &&
+                                                        mercancia.proveedor.toLowerCase().includes(filterNombreProveedor.toLowerCase())
+                                                    ) || [];
+                                                    
+
+                                                    // Calculamos los totales basados en las mercancías filtradas
+                                                    const totalMontoDcto = filteredMercancias.reduce((sum, m) => sum + Number(m.monto_documento), 0);
+                                                    const totalKilosTotal = filteredMercancias.reduce((sum, m) => sum + Number(m.peso_total), 0);
+                                                    const totalMetros3 = filteredMercancias.reduce((sum, m) => sum + Number(m.metros_cubicos), 0);
+
+                                                    return (
+                                                        <>
+                                                            {/* Renderizar las filas de mercancías filtradas */}
+                                                            {filteredMercancias.map((mercancia, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{new Date(mercancia.fecha).toLocaleDateString()}</td>
+                                                                    <td>{mercancia.numero_orden}</td>
+                                                                    <td>{mercancia.tipo_pago}</td>
+                                                                    <td>{mercancia.num_documento}</td>  
+                                                                    <td>{mercancia.rut_proveedor}</td>
+                                                                    <td>{mercancia.proveedor}</td>
+                                                                    <td>{Number(mercancia.monto_documento).toLocaleString()}</td>
+                                                                    <td>{mercancia.condicion_pago}</td>
+                                                                    <td>{mercancia.descripcion}</td>
+                                                                    <td>{mercancia.rut}</td>
+                                                                    <td>{mercancia.nombre}</td>
+                                                                    <td>{mercancia.cantidad_bultos}</td>
+                                                                    <td>{mercancia.peso_unidad}</td>
+                                                                    <td>{mercancia.peso_total}</td>
+                                                                    <td>{mercancia.metros_cubicos}</td>                                                       
+                                                                    <td>{Number(mercancia.precio_unitario).toLocaleString()}</td>                                                       
+                                                                    <td>{Number(mercancia.precio_iva).toLocaleString()}</td>                                                       
+                                                                </tr>
+                                                            ))}
+
+                                                            {/* Fila de totales (solo si hay mercancías filtradas) */}
+                                                            {filteredMercancias.length > 0 && (
+                                                                <tr style={{ fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>
+                                                                    <td colSpan="6" style={{ textAlign: 'right' }}>Total Monto:</td>
+                                                                    <td>{totalMontoDcto.toLocaleString()}</td>
+                                                                    <td colSpan="6" style={{ textAlign: 'right' }}>Total Kilos y Metros³:  </td> {/* Espacio vacío */}
+                                                                    <td>{totalKilosTotal.toLocaleString()}</td>
+                                                                    <td>{totalMetros3.toLocaleString()}</td>
+                                                                    <td colSpan="2"></td> {/* Espacio vacío */}
+                                                                </tr>
+                                                            )}
+                                                        </>
+                                                    );
+                                                })()}
                                             </tbody>
                                         </table>
                                     </td>

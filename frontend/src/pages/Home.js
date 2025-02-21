@@ -2,14 +2,30 @@ import { Link } from "react-router-dom";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../styles/template-home.css';
+import axios from "axios";
+
 
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
-    const { user } = useContext(AuthContext); // Obtiene el usuario autenticado
+    const { user,loading } = useContext(AuthContext); // Obtiene el usuario autenticado
+    console.log("usuario: ",user);
     const isAdmin = user?.role === "admin"; // Verifica si el usuario es admin
     const isJefe = user?.role === "admin" || user?.role === "jefe";
+
+    const handleLogout = async () => {
+        try {
+            await axios.post("http://localhost:3001/api/auth/logout", {}, { withCredentials: true });
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Error al cerrar sesión", error);
+        }
+    };
+
+    if (!user?.name) {
+        window.location.reload();
+    }
 
     return (
         <div className="principal">
@@ -17,53 +33,81 @@ const Home = () => {
                 <h1 className="tm-mt-0 tm-mb-15"><span className="tm-color-primary">Programa logístico de transporte</span></h1>
             </header>
 
-            <div className="tm-container">
-                <nav className="tm-main-nav">
-                    <ul id="inline-popups">
-                        <li className="tm-nav-item">
-                            <a href="/formulario" data-effect="mfp-move-from-top" className="tm-nav-link">
-                                Crear orden
-                                <i className="bi bi-list-columns-reverse"></i>
-                            </a>               
-                        </li>
-                        {isJefe && (
-                        <li className="tm-nav-item">
-                            <a href="/embarque" data-effect="mfp-move-from-top" className="tm-nav-link" id="tm-gallery-link">
-                                Crear embarque
-                                <i className="bi bi-truck"></i>
-                            </a>
-                        </li>
-                        )}
-                        {isAdmin && (
-                        <li className="tm-nav-item">
-                            <a href="/lista" data-effect="mfp-move-from-top" className="tm-nav-link">
-                                Lista embarques
-                                <i className="bi bi-table"></i>
-                            </a>
-                        </li>
-                        )}
-                    </ul>
-                    
-                    <ul id="inline-popups">
-                        {isAdmin && (
-                        <li className="tm-nav-item">
-                            <a data-effect="mfp-move-from-top" className="tm-nav-link">
-                                Gastos
-                                <i className="bi bi-currency-dollar"></i>
-                            </a>
-                        </li>
-                        )}
-                        {isAdmin && (
-                            <li className="tm-nav-item" style={{ marginLeft: "20px" }}>
-                                <a href="/admin" data-effect="mfp-move-from-top" className="tm-nav-link">
-                                    Administrar
-                                    <i className="bi bi-gear"></i>
-                                </a>
-                            </li>
-                        )}
-                    </ul>
-                </nav>
-            </div>
+            <div className="tm-container" style={{ position: "relative" }}>
+    {/* Información del usuario arriba a la derecha */}
+    <div style={{
+        position: "absolute",
+        top: "-70px",
+        right: "20px",
+        textAlign: "right"
+    }}>
+        <p style={{ color: "red", fontWeight: "bold", margin: 0 }}>{user?.name || "Usuario"}</p>
+        <p style={{ color: "red", fontWeight: "normal", margin: 0 }}>
+            {user?.role === "admin" ? "Administrador" : user?.role === "jefe" ? "Jefe de bodega" : "Ayudante de bodega"}
+        </p>
+    </div>
+
+    <nav className="tm-main-nav">
+        <ul id="inline-popups">
+            <li className="tm-nav-item">
+                <a href="/formulario" data-effect="mfp-move-from-top" className="tm-nav-link">
+                    Crear orden
+                    <i className="bi bi-list-columns-reverse"></i>
+                </a>               
+            </li>
+            {isJefe && (
+            <li className="tm-nav-item">
+                <a href="/embarque" data-effect="mfp-move-from-top" className="tm-nav-link" id="tm-gallery-link">
+                    Crear embarque
+                    <i className="bi bi-truck"></i>
+                </a>
+            </li>
+            )}
+            {isAdmin && (
+            <li className="tm-nav-item">
+                <a href="/lista" data-effect="mfp-move-from-top" className="tm-nav-link">
+                    Lista embarques
+                    <i className="bi bi-table"></i>
+                </a>
+            </li>
+            )}
+        </ul>
+        
+        <ul id="inline-popups">
+            {isAdmin && (
+            <li className="tm-nav-item">
+                <a data-effect="mfp-move-from-top" className="tm-nav-link">
+                    Gastos
+                    <i className="bi bi-currency-dollar"></i>
+                </a>
+            </li>
+            )}
+            {isAdmin && (
+                <li className="tm-nav-item" style={{ marginLeft: "20px" }}>
+                    <a href="/admin" data-effect="mfp-move-from-top" className="tm-nav-link">
+                        Administrar
+                        <i className="bi bi-gear"></i>
+                    </a>
+                </li>
+            )}
+        </ul>
+    </nav>
+
+    {/* Botón de Logout justo debajo y a la derecha del contenedor de nav */}
+    <div style={{
+        position: "absolute",
+        top: "100%", // Coloca el botón justo debajo del nav
+        right: "20px",
+        marginTop: "10px" // Ajusta el espacio entre el nav y el botón
+    }}>
+        <button 
+            onClick={handleLogout} 
+            className="btn btn-danger"
+        >
+            Cerrar sesión
+        </button>
+    </div>
+</div>
         </div>
     );
 };

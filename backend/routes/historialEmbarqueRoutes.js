@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
     });
 
 
-router.get("/historialEmbarques/mercanciasEmbarque/:id_embarque", async (req, res) => {
+router.get("/mercanciasEmbarque/:id_embarque", async (req, res) => {
     const { id_embarque } = req.params;
     const sql = `
     SELECT 

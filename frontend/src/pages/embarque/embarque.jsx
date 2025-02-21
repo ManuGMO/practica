@@ -35,7 +35,7 @@ const Embarque = () => {
     useEffect(() => {
         const fetchEnvios = async () => {
             try {
-                const response = await Axios.get("http://localhost:3001/api/getEnvios");
+                const response = await Axios.get("http://localhost:3001/api/embarque/getEnvios");
                 const data = response.data; // Obtiene los datos directamente
                 console.log("Datos recibidos:", data); // Verifica los datos
                 setDatosEnvios(data);

@@ -3,7 +3,7 @@ const router = express.Router();
 
 import { db } from "../config/db.js";
 
-router.get("/listaEmbarques", (req, res) => {
+router.get("/", (req, res) => {
     const sql = `
        SELECT 
             e.id_embarque,
@@ -31,7 +31,7 @@ router.get("/listaEmbarques", (req, res) => {
 });
 
 
-router.get("/listaMercancias/:id_embarque", async (req, res) => {
+router.get("/:id_embarque", async (req, res) => {
     const { id_embarque } = req.params;
     const sql = `
     SELECT 

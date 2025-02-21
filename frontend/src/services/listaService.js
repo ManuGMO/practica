@@ -13,7 +13,7 @@ export const obtenerListaEmbarques = async () => {
 
 export const fetchMercancias = async (id_embarque) => {
     try {
-        const response = await axios.get(`http://localhost:3001/api/listaMercancias/${id_embarque}`);
+        const response = await axios.get(`http://localhost:3001/api/listaEmbarques/${id_embarque}`);
         console.log("Datos:", response.data);
         return response.data;
         

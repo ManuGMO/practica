@@ -1,0 +1,25 @@
+.table {
+    border-radius: 8px; /* Bordes redondeados */
+    overflow: hidden; /* Oculta los bordes redondeados en las esquinas */
+}
+
+.table thead th {
+    font-weight: 600; /* Texto del encabezado en negrita */
+    letter-spacing: 0.5px; /* Espaciado entre letras */
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa; /* Color de fondo al hacer hover */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Color de fondo del botón */
+    border: none; /* Sin borde */
+    padding: 5px 10px; /* Espaciado interno */
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Color de fondo al hacer hover */
+}

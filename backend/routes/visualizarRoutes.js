@@ -3,7 +3,7 @@ const router = express.Router();
 
 import { db } from "../config/db.js";
 
-router.get("/visualizar/:numero_orden", (req, res) => {
+router.get("/:numero_orden", (req, res) => {
     const { numero_orden } = req.params;
 
     const sql = `

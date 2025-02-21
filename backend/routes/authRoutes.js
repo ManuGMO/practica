@@ -101,7 +101,7 @@ router.post("/login", async (req, res) => {
 
         // Crear token con `rut` y `role`
         const token = jwt.sign(
-            { rut: user[0].rut, role: user[0].role }, 
+            { rut: user[0].rut, role: user[0].role, name:user[0].nombre }, 
             "secreto", 
             { expiresIn: "2h" }
         );
@@ -112,7 +112,7 @@ router.post("/login", async (req, res) => {
             sameSite: "Strict"
         });
 
-        res.json({ rut: user[0].rut, role: user[0].role });
+        res.json({ rut: user[0].rut, role: user[0].role, name:user[0].name });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error en el servidor" });

@@ -3,7 +3,7 @@ import axios from "axios";
 export const crearEmbarque = async (datos_embarque) => {
     try {
         // 1. Crear el embarque (POST request)
-        const response = await axios.post("http://localhost:3001/api/crearEmbarque", {
+        const response = await axios.post("http://localhost:3001/api/embarque/crearEmbarque", {
             chofer: datos_embarque.chofer,
             num_embarque: datos_embarque.numEmbarque,
             patente_camion: datos_embarque.patenteCamion,
@@ -16,7 +16,7 @@ export const crearEmbarque = async (datos_embarque) => {
 
         // 2. Verificar que haya envíos seleccionados y actualizar `envios` (PUT request)
         if (datos_embarque.seleccionados.length > 0) {
-            await axios.put("http://localhost:3001/api/asignarEnvios", {
+            await axios.put("http://localhost:3001/api/embarque/asignarEnvios", {
                 id_embarque: id_embarque,
                 id_envios: datos_embarque.seleccionados
             });

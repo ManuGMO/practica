@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
                 const res = await axios.get("http://localhost:3001/api/auth/validate", {
                     withCredentials: true,
                 });
+                console.log("datos del user: ", res.data);
                 setUser(res.data.user);
             } catch (error) {
                 console.error("Sesión no válida:", error.response?.data?.message);
@@ -23,10 +24,14 @@ export const AuthProvider = ({ children }) => {
         };
         checkAuth();
     }, []);
+    useEffect(() => {
+        console.log("Usuario actualizado:", user);  
+    }, [user]);
 
     const login = (userData) => {
         setUser(userData);
     };
+
 
     const logout = async () => {
         await axios.post("http://localhost:3001/api/auth/logout", {}, { withCredentials: true });
