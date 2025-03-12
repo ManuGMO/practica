@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getHistorialOrdenes,fetchMercancias } from "../../services/historialOrdenesService";
+import { getHistorialOrdenes,fetchMercancias, EliminarOrden } from "../../services/historialOrdenesService";
 import { useParams, useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
@@ -52,7 +52,25 @@ const HistorialOrdenes = () => {
         }
     };
     
-    const handleEliminar = (id_envio) => {
+    const handleEliminar = (id_envio,id_embarque,num_embarque,numero_orden) => {
+        if (id_embarque !== null) {
+            setModalMessage(`El envío no puede ser editado porque ya está en el embarque<br/>N° ${num_embarque}`);
+            setShowModal(true);
+
+            // Cierra el modal automáticamente después de 3 segundos
+            setTimeout(() => {
+                setShowModal(false);
+            }, 3000);
+        } else {
+
+            let numero= numero_orden;
+            EliminarOrden(id_envio);
+
+            alert(`Orden ${numero} eliminada correctamente`);
+        }
+
+
+
         console.log("Eliminar embarque:", id_envio);
         // Lógica para eliminar el embarque
     };
@@ -97,7 +115,7 @@ const HistorialOrdenes = () => {
             <nav className="navbar bg-primary navbar-expand-lg" data-bs-theme="dark">
                 <div className="container-fluid">
                 {/* Botón Volver a la izquierda */}
-                <button className="navbar-brand btn btn-primary-subtle" onClick={() => window.history.back()}>
+                <button className="navbar-brand btn btn-primary-subtle" onClick={() => navigate(`/formulario`)}>
                     <i className="bi bi-arrow-bar-left" style={{ color: "white", marginRight: "7px" }}></i>
                     Volver
                 </button>
@@ -191,9 +209,9 @@ const HistorialOrdenes = () => {
                                 borderRadius: "8px", // Bordes redondeados
                                 backgroundColor: "#fff", // Fondo blanco
                             }}>
-                                <td>{envio.nombre}</td>
-                                <td>{envio.rut}</td>
-                                <td>{envio.ciudad}</td>
+                                <td>{envio.Cliente.nombre}</td>
+                                <td>{envio.Cliente.rut}</td>
+                                <td>{envio.Cliente.ciudad}</td>
                                 <td>{envio.condicion_pago}</td>
                                 <td>{new Date(envio.fecha).toLocaleDateString()}</td>
                                 <td>{envio.ciudad_origen}</td>
@@ -202,9 +220,9 @@ const HistorialOrdenes = () => {
                                 <a href={`/formulario/orden/${envio.numero_orden}`}>
                                     {envio.numero_orden}
                                 </a>
-                                {envio.num_embarque && (
+                                {envio.Embarque.num_embarque && (
                                     <div style={{ color: "red", fontWeight: "bold", fontSize: "0.9em" }}>
-                                        Embarque: {envio.num_embarque}
+                                        Embarque: {envio.Embarque.num_embarque}
                                     </div>
                                 )}
                                 </td>
@@ -242,7 +260,7 @@ const HistorialOrdenes = () => {
                                         <button
                                             className="btn btn-danger"
                                             style={{ width: "100px", height: "40px" }} // Botón más ancho que alto
-                                            onClick={() => handleEliminar(envio.id_envio)} // Función para eliminar
+                                            onClick={() => handleEliminar(envio.id_envio,envio.id_embarque, envio.numero_orden,envio.numero_orden)} // Función para eliminar
                                         >
                                             Eliminar
                                         </button>

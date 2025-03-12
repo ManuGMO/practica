@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { obtenerListaEmbarques } from "../../services/listaService"; // Importa la función del servicio
 import { fetchMercancias } from "../../services/listaService";
 import '../../styles/lista_embarque.css';
-import { generarPDF } from "./imprimir";
+import { generarPDF , InformePDF} from "./imprimir";
 
 // --------------------------   LISTA DE LA PAGINA 'LISTA'---------------------------
 
@@ -83,8 +83,8 @@ const Lista = () =>  {
                 setExpandedEmbarque(id_embarque);
                 if (!mercancias[id_embarque]) {
                     try {
-                        const data = await fetchMercancias(id_embarque);  // 🔥 Espera los datos reales
-                        setMercancias(prev => ({ ...prev, [id_embarque]: data })); // 🔥 Guarda los datos, no la promesa
+                        const data = await fetchMercancias(id_embarque);  // Espera los datos reales
+                        setMercancias(prev => ({ ...prev, [id_embarque]: data })); //Guarda los datos, no la promesa
                     } catch (error) {
                         console.error("Error al obtener las mercancías:", error);
                     }
@@ -294,6 +294,9 @@ const Lista = () =>  {
                                                                 className="form-control"
                                                                 style={{ width: '200px' }}
                                                             />
+                                                                <button className="btn btn-danger" style={{ marginLeft: '10px' }} onClick={() => InformePDF(mercancias[embarque.id_embarque])}>
+                                                                    <i class="bi bi-table"></i>
+                                                                </button>
                                                         </div>
                                                         
                                                     </th>
@@ -302,7 +305,7 @@ const Lista = () =>  {
                                                     <th>Fecha recepcion</th>
                                                     <th>Nro. Orden</th>
                                                     <th>Tipo de documento</th>
-                                                    <th>Folio Documento</th>
+                                                    <th>Folio</th>
                                                     <th>Rut proveedor</th>
                                                     <th>Proveedor</th>
                                                     <th>$ Monto Dcto.</th>
@@ -344,7 +347,7 @@ const Lista = () =>  {
                                                                     <td>{mercancia.num_documento}</td>  
                                                                     <td>{mercancia.rut_proveedor}</td>
                                                                     <td>{mercancia.proveedor}</td>
-                                                                    <td>{Number(mercancia.monto_documento).toLocaleString()}</td>
+                                                                    <td>${Number(mercancia.monto_documento).toLocaleString()}</td>
                                                                     <td>{mercancia.condicion_pago}</td>
                                                                     <td>{mercancia.descripcion}</td>
                                                                     <td>{mercancia.rut}</td>
@@ -353,8 +356,8 @@ const Lista = () =>  {
                                                                     <td>{mercancia.peso_unidad}</td>
                                                                     <td>{mercancia.peso_total}</td>
                                                                     <td>{mercancia.metros_cubicos}</td>                                                       
-                                                                    <td>{Number(mercancia.precio_unitario).toLocaleString()}</td>                                                       
-                                                                    <td>{Number(mercancia.precio_iva).toLocaleString()}</td>                                                       
+                                                                    <td>${Number(mercancia.precio_unitario).toLocaleString()}</td>                                                       
+                                                                    <td>${Number(mercancia.precio_iva).toLocaleString()}</td>                                                       
                                                                 </tr>
                                                             ))}
 
@@ -362,10 +365,10 @@ const Lista = () =>  {
                                                             {filteredMercancias.length > 0 && (
                                                                 <tr style={{ fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>
                                                                     <td colSpan="6" style={{ textAlign: 'right' }}>Total Monto:</td>
-                                                                    <td>{totalMontoDcto.toLocaleString()}</td>
+                                                                    <td>${totalMontoDcto.toLocaleString()}</td>
                                                                     <td colSpan="6" style={{ textAlign: 'right' }}>Total Kilos y Metros³:  </td> {/* Espacio vacío */}
-                                                                    <td>{totalKilosTotal.toLocaleString()}</td>
-                                                                    <td>{totalMetros3.toLocaleString()}</td>
+                                                                    <td>{totalKilosTotal.toLocaleString()} Kg</td>
+                                                                    <td>{totalMetros3.toLocaleString()} M³</td>
                                                                     <td colSpan="2"></td> {/* Espacio vacío */}
                                                                 </tr>
                                                             )}

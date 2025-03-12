@@ -1,0 +1,102 @@
+{
+    "rut": "96.994.750-1",
+    "nombre": "Superfrut S.A",
+    "direccion": "Manuel Bulnes 832",
+    "actividad": "Comercio",
+    "comuna": "Natales",
+    "ciudad": "Puerto Natales",
+    "region": "Magallanes y Antartica chilena",
+    "telefono": "(61) 241 0249",
+    "condicion": "Cheque dia",
+    "fecha": "2025-02-27",
+    "origen": "SCL",
+    "destino": "PNT",
+    "recogida": "Bodega central",
+    "entrega": "Bodega super",
+    "mercanciasData": [
+        {
+            "descripcion": "Jugos",
+            "tipo_pago": "Boleta",
+            "num_documento": "111",
+            "proveedor": "Whatts",
+            "rutProveedor": "10.394.829-2",
+            "precio_unitario": 12000,
+            "peso_unidad": "11",
+            "metros_cubicos": "0.2",
+            "tipo_bulto": "Paquetes",
+            "cantidad_bultos": "10"
+        },
+        {
+            "descripcion": "Jugos Manzana",
+            "tipo_pago": "Boleta",
+            "num_documento": "120",
+            "proveedor": "Whatts",
+            "rutProveedor": "10.394.829-2",
+            "precio_unitario": 12000,
+            "peso_unidad": "11",
+            "metros_cubicos": "0.2",
+            "tipo_bulto": "Paquetes",
+            "cantidad_bultos": "5"
+        },
+        {
+            "descripcion": "Leche Entera",
+            "tipo_pago": "Factura",
+            "num_documento": "892",
+            "proveedor": "Colun",
+            "rutProveedor": "9.028.385-K",
+            "precio_unitario": 15000,
+            "peso_unidad": "15",
+            "metros_cubicos": "0.2",
+            "tipo_bulto": "Cajas",
+            "cantidad_bultos": "5"
+        },
+        {
+            "descripcion": "Leche chocolate",
+            "tipo_pago": "Factura",
+            "num_documento": "902",
+            "proveedor": "Colun",
+            "rutProveedor": "9.028.385-K",
+            "precio_unitario": 18000,
+            "peso_unidad": "15",
+            "metros_cubicos": "0.2",
+            "tipo_bulto": "Cajas",
+            "cantidad_bultos": "6"
+        },
+        {
+            "descripcion": "Leche Frutilla",
+            "tipo_pago": "Factura",
+            "num_documento": "982",
+            "proveedor": "Colun",
+            "rutProveedor": "9.028.385-K",
+            "precio_unitario": 15000,
+            "peso_unidad": "15",
+            "metros_cubicos": "0.2",
+            "tipo_bulto": "Cajas",
+            "cantidad_bultos": "5"
+        },
+        {
+            "descripcion": "Agua Gasificada",
+            "tipo_pago": "Factura",
+            "num_documento": "020",
+            "proveedor": "Cachantun",
+            "rutProveedor": "10.293.811-2",
+            "precio_unitario": 10000,
+            "peso_unidad": "7",
+            "metros_cubicos": "0.3",
+            "tipo_bulto": "Paquetes",
+            "cantidad_bultos": "8"
+        },
+        {
+            "descripcion": "Agua sin gas",
+            "tipo_pago": "Factura",
+            "num_documento": "021",
+            "proveedor": "Cachantun",
+            "rutProveedor": "10.293.811-2",
+            "precio_unitario": 9500,
+            "peso_unidad": "7",
+            "metros_cubicos": "0.3",
+            "tipo_bulto": "Paquetes",
+            "cantidad_bultos": "9"
+        }
+    ]
+}

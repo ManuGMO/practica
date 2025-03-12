@@ -1,19 +1,26 @@
 import express from 'express';
-const app = express();
 import cookieParser from "cookie-parser";
-
 import cors from 'cors';
+import dotenv from "dotenv";
+import './models/IndexModels.js';
 
-const PORT = 3001;
+const app = express();
+dotenv.config();
+
+const PORT = process.env.FRONT_PORT || 3001;
+
+
+await sequelize.sync({alter : true});
 
 app.use(cookieParser());  // Middleware para manejar cookies
+app.use(express.json());
 
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true   // Permitir cookies en el frontend
 }));
 
-app.use(express.json());
+
 
 app.listen(PORT,()=>{
     console.log("Me corro en el puerto 3001")
@@ -31,6 +38,7 @@ import historialOrdenes from './routes/historialOrdenesRoutes.js'
 import authRoutes from './routes/authRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 import roleMiddleware from "./middleware/roleMiddleware.js";
+import { sequelize } from './config/db.js';
 
 
 

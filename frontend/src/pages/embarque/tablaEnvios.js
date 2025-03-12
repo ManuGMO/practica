@@ -59,7 +59,7 @@ const TablaEnvios = ({ datos, onSeleccionar }) => {
                                 <td>{item.numero_orden}</td>
                                 <td>{item.nombre}</td>
                                 <td>{item.rut}</td>
-                                <td>{item.total_mercancias}</td>
+                                <td>{item.total_envios}</td>
                                 <td>{parseFloat(item.total_peso).toFixed(2)} kg</td>
                                 <td>{parseFloat(item.total_metros_cubicos).toFixed(2)} m³</td>
                                 <td>{item.total_cantidad_bultos}</td>

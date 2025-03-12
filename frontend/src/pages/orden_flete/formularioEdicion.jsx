@@ -7,8 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../../styles/formulario.css';
-import { buscarCliente, actualizarEnvio, actualizarMercancias } from '../../services/formularioService';
+import { buscarCliente,actualizarEnvio, obtenerDatosEnvio } from '../../services/formularioService';
+
 import TablaMercancia from './tablaMercancia';
+
 
 const FormularioEdicion = () => {
     const { numero_orden } = useParams(); // Obtener el número de orden de la URL
@@ -66,30 +68,42 @@ const FormularioEdicion = () => {
         }
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/envio/${numero_orden}`);
-                const data = await response.json();
+                const data = await obtenerDatosEnvio(numero_orden);
                 console.log("sip", data);
-                if (data.cliente && data.envio && data.mercancias) {
-                    // Precargar datos del cliente
-                    setRut(data.cliente.rut);
-                    setNombre(data.cliente.nombre);
-                    setDireccion(data.cliente.direccion);
-                    setActividad(data.cliente.actividad_economica);
-                    setComuna(data.cliente.comuna);
-                    setCiudad(data.cliente.ciudad);
-                    setRegion(data.cliente.region);
-                    setTelefono(data.cliente.telefono);
+                if (data.clienteData && data.envioData && data.mercancias) {
+                    // Precargar datos del clienteData
+                    setRut(data.clienteData.rut);
+                    setNombre(data.clienteData.nombre);
+                    setDireccion(data.clienteData.direccion);
+                    setActividad(data.clienteData.actividad_economica);
+                    setComuna(data.clienteData.comuna);
+                    setCiudad(data.clienteData.ciudad);
+                    setRegion(data.clienteData.region);
+                    setTelefono(data.clienteData.telefono);
 
                     // Precargar datos del envío
-                    setCondicion(data.envio.condicion_pago);
-                    setFecha(new Date(data.envio.fecha).toISOString().split('T')[0]);
-                    setOrigen(data.envio.ciudad_origen);
-                    setDestino(data.envio.ciudad_destino);
-                    setRecoger(data.envio.lugar_recogida);
-                    setEntregar(data.envio.lugar_entrega);
+                    setCondicion(data.envioData.condicion_pago);
+                    setFecha(new Date(data.envioData.fecha).toISOString().split('T')[0]);
+                    setOrigen(data.envioData.ciudad_origen);
+                    setDestino(data.envioData.ciudad_destino);
+                    setRecoger(data.envioData.lugar_recogida);
+                    setEntregar(data.envioData.lugar_entrega);
+
+                    const mercancias = data.mercancias.map(item => ({
+                        descripcion: item.descripcion,
+                        tipo_pago: item.tipo_pago,
+                        num_documento: item.num_documento,
+                        proveedor: item.proveedor,
+                        rut_proveedor: item.rut_proveedor,
+                        precio_unitario: Number(item.precio_unitario).toLocaleString("es-CL"),
+                        peso_unidad: item.peso_unidad,
+                        metros_cubicos: item.metros_cubicos,
+                        tipo_bulto: item.tipo_bulto,
+                        cantidad_bultos: item.cantidad_bultos,
+                    }));
 
                     // Precargar mercancías
-                    setMercancia(data.mercancias);
+                    setMercancia(mercancias);
                 }
             } catch (error) {
                 console.error("Error al obtener los datos del envío:", error);
@@ -147,7 +161,6 @@ const FormularioEdicion = () => {
       const buscar = async () => {
           try {
               const clienteEncontrado = await buscarCliente(rut);
-              console.log(clienteEncontrado);
               if (clienteEncontrado) {
                   setNombre(clienteEncontrado.nombre);
                   setDireccion(clienteEncontrado.direccion);
@@ -169,14 +182,25 @@ const FormularioEdicion = () => {
     const guardarCambios = async () => {
         try {
             // Actualizar cliente y envío
-            await actualizarEnvio(numero_orden, clienteData, envioData);
+            const mercanciaData = mercancia.map(item => ({
+                descripcion: item.descripcion,
+                tipo_pago: item.tipo_pago,
+                num_documento: item.num_documento,
+                proveedor: item.proveedor,
+                rutProveedor: item.rut_proveedor,
+                precio_unitario: parseInt(item.precio_unitario.replace(/\./g, ""), 10),
+                peso_unidad: item.peso_unidad,
+                metros_cubicos: item.metros_cubicos,
+                tipo_bulto: item.tipo_bulto,
+                cantidad_bultos: item.cantidad_bultos,
+            }));
+
+            console.log("Mercancias: ", mercanciaData);
+
+            await actualizarEnvio(numero_orden, clienteData, envioData, mercanciaData);
             console.log("Hola 1");
             // Eliminar las mercancías existentes y agregar las nuevas
             
-            await actualizarMercancias(numero_orden, mercancia.map(item => ({
-                ...item,
-                id_envio: numero_orden, // Se envía el número de orden
-            })));
 
             alert("Cambios guardados correctamente");
             navigate(`/formulario/orden/${numero_orden}`);

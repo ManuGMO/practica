@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import 'jspdf-autotable';
+import { Button } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
 
 export const generarPDF = (embarque, mercancias) => {
@@ -93,6 +94,60 @@ export const generarPDF = (embarque, mercancias) => {
             15: { cellWidth: 'wrap' },
             16: { cellWidth: 'wrap' }
         }
+    });
+
+    const pdfOutput = doc.output("blob"); // Genera un Blob del PDF
+    const pdfUrl = URL.createObjectURL(pdfOutput);
+    window.open(pdfUrl);
+};
+
+
+
+export const InformePDF = (mercancias) => {
+
+    console.log("Mercancias en Informe", mercancias);
+
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    
+    doc.text("Informe Valor Carga - Superfrut S.A", 14, 15);
+    
+    let y = 30;
+    
+    const proveedores = {};
+    mercancias
+      .filter((m) => m.nombre === "Superfrut S.A")
+      .forEach((m) => {
+        if (!proveedores[m.proveedor]) {
+          proveedores[m.proveedor] = [];
+        }
+        proveedores[m.proveedor].push(m);
+      });
+    
+    Object.keys(proveedores).forEach((proveedor) => {
+      const totalMonto = proveedores[proveedor].reduce(
+        (sum, m) => sum + Number(m.monto_documento),
+        0
+      );
+      
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${proveedor}: $${totalMonto.toLocaleString()}`, 14, y);
+      y += 3;
+      
+      doc.autoTable({
+        startY: y,
+        head: [["Montos", "Descripción", "Forma de Pago"]],
+        body: proveedores[proveedor].map((m) => [
+          `$${Number(m.monto_documento).toLocaleString()}`,
+          m.descripcion,
+          m.condicion_pago,
+        ]),
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [0, 128, 0], textColor: 255, fontStyle: "bold" },
+      });
+      
+      y = doc.autoTable.previous.finalY + 10;
     });
 
     const pdfOutput = doc.output("blob"); // Genera un Blob del PDF

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TablaEnvios from './tablaEnvios';
 import Axios from 'axios';
-import { crearEmbarque } from '../../services/embarqueService';
+import { crearEmbarque, getEnvios } from '../../services/embarqueService';
 import '../../styles/embarque.css';
 
 
@@ -35,8 +35,7 @@ const Embarque = () => {
     useEffect(() => {
         const fetchEnvios = async () => {
             try {
-                const response = await Axios.get("http://localhost:3001/api/embarque/getEnvios");
-                const data = response.data; // Obtiene los datos directamente
+                const data = await getEnvios(); // Obtiene los datos directamente
                 console.log("Datos recibidos:", data); // Verifica los datos
                 setDatosEnvios(data);
             } catch (error) {

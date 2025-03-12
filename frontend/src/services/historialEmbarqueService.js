@@ -14,6 +14,8 @@ export const getHistorialEmbarques = async () => {
 
 export const fetchMercancias = async (id_embarque) => {
     try {
+
+        console.log("Embarque que va: ", id_embarque);
         const response = await axios.get(`http://localhost:3001/api/historialEmbarques/mercanciasEmbarque/${id_embarque}`);
         console.log("Datos:", response.data);
         return response.data;

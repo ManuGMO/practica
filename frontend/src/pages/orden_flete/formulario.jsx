@@ -50,6 +50,8 @@ const Formulario = () => {
   const envioData = {condicion, fecha, origen, destino, recogida, entrega};
   let navigate = useNavigate();
   const [idEnvio, setIdEnvio] = useState("");
+
+  //    Funcion para ingresar ordenes 
   const ingresar = async () => {
     // 1️⃣ Verificar si algún campo está vacío
     const camposVacios = [
@@ -61,50 +63,36 @@ const Formulario = () => {
         const mensajeError = `⚠️ Los siguientes campos están vacíos:\n ${camposVacios.map(([key]) => `• ${key}`).join("\n")}`;
         setErrorModal(mensajeError); // Mostrar modal de error
 
-        // ⏳ Ocultar el modal después de 1 segundo
+        //Ocultar el modal después de 1 segundo
         setTimeout(() => setErrorModal(null), 3000);
-        return; // 🚨 Se cancela la ejecución de la función
+        return; 
     }
 
     let id_envio;
     try {
-        id_envio = await add(clienteData, envioData);
+      const mercanciasData = mercancia.map(item => ({
+          descripcion: item.descripcion,
+          tipo_pago: item.tipo_pago,
+          num_documento: item.num_documento,
+          proveedor: item.proveedor,
+          rutProveedor: item.rut_proveedor,
+          precio_unitario: parseInt(item.precio_unitario.replace(/\./g, ""), 10),
+          peso_unidad: item.peso_unidad,
+          metros_cubicos: item.metros_cubicos,
+          tipo_bulto: item.tipo_bulto,
+          cantidad_bultos: item.cantidad_bultos,
+      }));
 
-        if (!id_envio) {
-            throw new Error("No se pudo obtener el ID del envío.");
-        }
+        const numero_orden= await add(clienteData, envioData, mercanciasData);
 
         setIdEnvio(id_envio);
         console.log("Debería ser la ID del envío:", id_envio);
 
-        const mercanciasData = mercancia.map(item => ({
-            descripcion: item.descripcion,
-            tipo_pago: item.tipoDocumento,
-            num_documento: item.numeroDocumento,
-            proveedor: item.proveedor,
-            rutProveedor: item.rutProveedor,
-            precio: parseInt(item.precio.replace(/\./g, ""), 10),
-            peso: item.peso,
-            metros_cubicos: item.metrosCubicos,
-            tipo_bulto: item.tipo_bulto,
-            cantidad_bultos: item.cantidad_bultos,
-            id_envio
-        }));
-
-
-        await agregar(mercanciasData);
-
-        let numero_orden = await crearNumeroOrden(id_envio);
         navigate(`/formulario/orden/${numero_orden}`);
-
+        
     } catch (error) {
-        if (id_envio) {
-            console.log("ID:", id_envio);
-            await cancelarEnvio(id_envio);
-        }
         console.error("Error en el proceso de ingreso:", error);
         alert("Ocurrió un error y no se completó la operación.");
-
         setTimeout(() => setErrorModal(null), 1000);
     }
 };

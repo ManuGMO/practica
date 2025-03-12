@@ -4,16 +4,15 @@ import React, { useEffect, useState } from "react";
 const TablaMercancia = ({ mercancia, setMercancia }) =>{
 
     const [descripcion, setDescripcion] = useState('');
-    const [peso, setPeso] = useState('');
-    const [metrosCubicos, setMetrosCubicos] = useState('');
-    //const [items, setItems] = useState([]);
-    const [tipobulto, setTipoBulto] = useState("");
-    const [cantidadbultos, setCantidadBulto] = useState("");
-    const [tipoDocumento, setTipoDocumento] = useState("");
-    const [numeroDocumento, setNumeroDocumento] = useState("");
+    const [peso_unidad, setPesoUnidad] = useState('');
+    const [metros_cubicos, setMetrosCubicos] = useState('');
+    const [tipo_bulto, setTipoBulto] = useState("");
+    const [cantidad_bultos, setCantidadBulto] = useState("");
+    const [tipo_pago, setTipoPago] = useState("");
+    const [num_documento, setNumeroDocumento] = useState("");
     const [proveedor, setProveedor] = useState("");
-    const [rutProveedor, setRutProveedor] = useState("");
-    const [precio, setPrecio] = useState("");
+    const [rut_proveedor, setRutProveedor] = useState("");
+    const [precio_unitario, setPrecio] = useState("");
     
     
 
@@ -22,15 +21,15 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
         const nuevaMercancia = {
             id: mercancia.length + 1, // Generar un ID temporal
             descripcion,
-            tipoDocumento,
-            numeroDocumento,
+            tipo_pago,
+            num_documento,
             proveedor,
-            rutProveedor,
-            precio,
-            peso,
-            metrosCubicos,
-            tipo_bulto: tipobulto,
-            cantidad_bultos: cantidadbultos
+            rut_proveedor,
+            precio_unitario,
+            peso_unidad,
+            metros_cubicos,
+            tipo_bulto,
+            cantidad_bultos
         };
 
         
@@ -39,12 +38,12 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
         setMercancia([...mercancia, nuevaMercancia]);
         // Limpiar los campos de entrada
         setDescripcion('');
-        setTipoDocumento('');
+        setTipoPago('');
         setNumeroDocumento('')
         setProveedor('');
         setRutProveedor('');
         setPrecio('');
-        setPeso('');
+        setPesoUnidad('');
         setMetrosCubicos('');
         setTipoBulto('');
         setCantidadBulto('');
@@ -57,14 +56,14 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
     };
 
     const handleMontoChange = (e) => {
-      let value = e.target.value.replace(/\D/g, ""); // 🔥 Elimina cualquier carácter que no sea número
-      let formattedValue = Number(value).toLocaleString("es-CL"); // 🔥 Agrega los puntos cada 3 dígitos
+      let value = e.target.value.replace(/\D/g, ""); // Elimina cualquier carácter que no sea número
+      let formattedValue = Number(value).toLocaleString("es-CL"); //Agrega los puntos cada 3 dígitos
       
       setPrecio(formattedValue);
     };
 
     const handleSubmit = () => {
-      const montoSinPuntos = parseInt(precio.replace(/\./g, ""), 10);
+      const montoSinPuntos = parseInt(precio_unitario.replace(/\./g, ""), 10);
       console.log("Enviando a la base de datos:", montoSinPuntos);
       // Aquí envías `montoSinPuntos` a la API o base de datos
   };
@@ -96,18 +95,18 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
 
               <input value={descripcion} type="text" class="form-control" placeholder="Descripción de la mercancía" 
                 onChange={(e) => setDescripcion(e.target.value)}/>
-              <select value={tipoDocumento} className="form-select" id='tipoDoc' onChange={(e) => setTipoDocumento(e.target.value)}>
-                <option value="">Tipo documento</option>
+              <select value={tipo_pago} className="form-select" id='tipoDoc' onChange={(e) => setTipoPago(e.target.value)}>
+                <option value="">Tipo de pago</option>
                 <option value="Boleta">Boleta</option>
                 <option value="Factura">Factura</option>
                 <option value="Guia de despacho">Guía de despacho</option>
               </select>
-              <input value={numeroDocumento} type="text" class="form-control" placeholder="Numero de folio" 
+              <input value={num_documento} type="text" class="form-control" placeholder="Numero de folio" 
                 onChange={(e) => setNumeroDocumento(e.target.value)}/>
               <input value={proveedor} type="text" class="form-control" placeholder="Nombre Proveedor" 
                 onChange={(e) => setProveedor(e.target.value)}/>
               <input 
-                        value={rutProveedor} 
+                        value={rut_proveedor} 
                         onChange={rutProv} 
                         className="form-control" 
                         type="text" 
@@ -118,15 +117,15 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
                         aria-describedby="button-addon2" 
                     />
               
-              <input value={peso} type="number" class="form-control" placeholder="Peso unidad (kg)" 
-                onChange={(e) => setPeso(e.target.value)}/>
-              <input value={metrosCubicos} type="number" class="form-control" placeholder="Metros cúbicos" 
+              <input value={peso_unidad} type="number" class="form-control" placeholder="Peso unidad (kg)" 
+                onChange={(e) => setPesoUnidad(e.target.value)}/>
+              <input value={metros_cubicos} type="number" class="form-control" placeholder="Metros cúbicos" 
                 onChange={(e) => setMetrosCubicos(e.target.value)}/>
-              <input value={tipobulto} type="text" class="form-control" placeholder="Tipo de bulto" 
+              <input value={tipo_bulto} type="text" class="form-control" placeholder="Tipo de bulto" 
                 onChange={(e) => setTipoBulto(e.target.value)}/>
-              <input value={cantidadbultos} type="number" class="form-control" placeholder="Cantidad de Bultos" 
+              <input value={cantidad_bultos} type="number" class="form-control" placeholder="Cantidad de Bultos" 
                 onChange={(e) => setCantidadBulto(e.target.value)} />
-                <input value={precio} type="text" className="form-control" placeholder="$ Precio Neto UN." 
+              <input value={precio_unitario} type="text" className="form-control" placeholder="$ Precio Neto UN." 
                 onChange={handleMontoChange}/>
 
               {/* BOTON PARA AGREGAR MERCANCIA */}
@@ -153,15 +152,15 @@ const TablaMercancia = ({ mercancia, setMercancia }) =>{
                 {mercancia.map((val,key) => (
                   <tr key={key}>
                     <td>{val.descripcion}</td>
-                    <td>{val.tipoDocumento}</td>
-                    <td>{val.numeroDocumento}</td>
+                    <td>{val.tipo_pago}</td>
+                    <td>{val.num_documento}</td>
                     <td>{val.proveedor}</td>
-                    <td>{val.rutProveedor}</td>
-                    <td>{val.peso}</td>
-                    <td>{val.metrosCubicos}</td>
+                    <td>{val.rut_proveedor}</td>
+                    <td>{val.peso_unidad}</td>
+                    <td>{val.metros_cubicos}</td>
                     <td>{val.tipo_bulto}</td>
                     <td>{val.cantidad_bultos}</td>
-                    <td>{val.precio}</td>
+                    <td>{val.precio_unitario}</td>
 
                     <td>
                     <button type="button" class="btn btn-primary btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setborrar(key)}><i className="bi bi-trash"></i></button>

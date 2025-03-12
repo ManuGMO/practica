@@ -1,7 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf";
 import QRCode from "qrcode";
 import { generarBoleta, generarTicket, generarPDF } from './boletas';
@@ -12,7 +12,8 @@ import html2canvas from 'html2canvas';
 import 'jspdf-autotable';
 
 const VisualizarOrden = () => {
-   
+
+   const navigate = useNavigate();
   const { numero_orden } = useParams(); 
 
   const [clienteData, setClienteData] = useState({});
@@ -51,7 +52,7 @@ const fechaReal = new Date(envioData.fecha).toLocaleDateString("es-CL", {year: "
         <nav className="navbar bg-primary-subtle navbar-expand-lg" data-bs-theme="dark">
             <div className="container-fluid">
             {/* Botón Volver a la izquierda */}
-            <button className="navbar-brand btn btn-primary-subtle" onClick={() => window.history.back()}>
+            <button className="navbar-brand btn btn-primary-subtle" onClick={() => navigate(`/formulario`)}>
                 <i className="bi bi-arrow-bar-left" style={{ color: "white", marginRight: "7px" }}></i>
                 Volver
             </button>
